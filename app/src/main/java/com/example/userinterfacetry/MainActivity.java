@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    // 检查有没有注册过
                     mTextMessage.setText(R.string.title_home);
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     Fragment f1 = new MasterHomeFragment();
