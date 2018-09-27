@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     }
 
     static public Context mainContext;
+    static public Master master;
 
     private TextView mTextMessage;
     private FragmentManager fragmentManager;
@@ -35,9 +36,12 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                     Master master = Master.getMasterInstance();
 
                     Fragment displayFragment = null;
-                    if( ! master.isRegister() ){
+                    if( ! master.isRegister() ){ // 没有注册过信息
                         displayFragment = new MasterHomeRegisterFragment();
                         Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_LONG).show();
+                    }else if( ! master.isHaveLock() ) { // 没有关联门锁
+                        displayFragment = new MasterHomeRelatedToLock();
+                        Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_LONG).show();
                     }else{
                         displayFragment = new MasterHomeFragment();
                     }

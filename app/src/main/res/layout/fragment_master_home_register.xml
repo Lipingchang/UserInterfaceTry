@@ -45,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:inputType="textPassword"
-            android:drawableRight="@drawable/ic_green_accept_25dp"
             android:hint="pwd.."/>
 
     </LinearLayout>
@@ -77,7 +76,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="register!"
-        android:clickable="false"
         />
 
 
