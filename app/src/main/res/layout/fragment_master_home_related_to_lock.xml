@@ -5,9 +5,24 @@
     android:layout_height="match_parent"
     tools:context=".MasterHomeRelatedToLock">
 
+    <TextView
+        android:id="@+id/id_master_home_related_to_lock_textview1"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="50dp"
+        android:text="00"
+        />
+
+
     <Button
+        android:id="@+id/id_master_home_related_to_lock_btn1"
+        android:layout_gravity="center"
         android:text="按住Button之后贴近门锁来认证"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:width="300dp"
+        android:height="300dp"
+        />
 
 </FrameLayout>

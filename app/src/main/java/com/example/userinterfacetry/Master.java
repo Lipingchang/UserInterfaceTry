@@ -15,12 +15,13 @@ public class Master {
     static final public String MASTER_SAVE_FILE = "MASTERINFO";
     static private Master masterInstance;
 
-    private boolean register = false;
-    private boolean haveLock = false;
+    private boolean register = false;       // name 和 pwd 有没有设置
+    private boolean haveLock = false;       // masterid 和 lockid 有没有设置  在和pn532关联之后才会初始化.
+
     private String masterName = "not set";
     private String masterPwd = "not set";
     private int    masterId = -1;
-    private String LockID = "not set";
+    private String LockID = "not set";      //
 
     public static Master getMasterInstance(){
         if( masterInstance == null ){
@@ -42,12 +43,11 @@ public class Master {
             this.masterPwd = data.getMasterPwd();
 
              register = true;               // 手机上有没有保存 master的信息
-             haveLock = this.masterId != -1;// master 有没有 和门锁关联过。
+             haveLock = (this.masterId != -1 && (!this.LockID.equals("not set")));// master 有没有 和门锁关联过。
          }catch (Exception e){
              //file not Found!
              register = false;
              haveLock = false;
-             return;
         }
     }
     public boolean isHaveLock(){return  haveLock;}
@@ -70,7 +70,6 @@ public class Master {
     public void setMaster(String name,String pwd) throws Exception {
         this.masterName = name;
         this.masterPwd = pwd;
-        this.masterId = -1;
 
         OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -78,6 +77,16 @@ public class Master {
         out.write(s.getBytes());
         out.close();
 
+    }
+    public void setRelate(String LockID,int masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
+        this.LockID = LockID;
+        this.masterId = masterId;
+
+        OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String s = gson.toJson(this,this.getClass());
+        out.write(s.getBytes());
+        out.close();
     }
 
 }
