@@ -166,4 +166,9 @@ public class MasterHomeRegisterFragment extends Fragment {
             throw new ClassCastException(context.toString() + " must implement OnButton2ClickListener");
         }
     }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        MasterRegisterOKListener = null;
+    }
 }
