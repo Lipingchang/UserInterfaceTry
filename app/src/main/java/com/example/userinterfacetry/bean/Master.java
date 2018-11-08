@@ -1,15 +1,14 @@
-package com.example.userinterfacetry;
+package com.example.userinterfacetry.bean;
 
 import android.content.Context;
 
+import com.example.userinterfacetry.MainActivity;
 import com.google.gson.Gson;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 public class Master {
     static final public String MASTER_SAVE_FILE = "MASTERINFO";
@@ -67,6 +66,7 @@ public class Master {
         return masterId;
     }
 
+    // 设置本机的用户
     public void setMaster(String name,String pwd) throws Exception {
         this.masterName = name;
         this.masterPwd = pwd;
@@ -76,9 +76,11 @@ public class Master {
         String s = gson.toJson(this,this.getClass());
         out.write(s.getBytes());
         out.close();
+        this.register = true;
 
     }
-    public void setRelate(String LockID,int masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
+    // 设置和门锁关联
+    public void setLock(String LockID,int masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
         this.LockID = LockID;
         this.masterId = masterId;
 
@@ -87,6 +89,7 @@ public class Master {
         String s = gson.toJson(this,this.getClass());
         out.write(s.getBytes());
         out.close();
+        this.haveLock = true;
     }
 
 }

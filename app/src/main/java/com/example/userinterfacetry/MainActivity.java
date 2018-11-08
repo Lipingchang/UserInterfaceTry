@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.userinterfacetry.bean.Master;
+
 public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener{
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -20,46 +22,51 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     }
 
     static public Context mainContext;
-    static public Master master;
     static public boolean DoingRegister = false; // 当 MasterHomeRelatedToLock 中的按钮按下的时候,改成true,这样的话,可以让apduService知道可以把秘钥信息发送出去.
 
     private TextView mTextMessage;
     private FragmentManager fragmentManager;
+    private Fragment currentFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    mTextMessage.setText("");
+                    Fragment display = null; // 将要展示的fragment:
+                    switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            // 检查有没有注册过
+                            Master master = Master.getMasterInstance();
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    // 检查有没有注册过
-                    Master master = Master.getMasterInstance();
-
-                    Fragment displayFragment = null;
-                    if( ! master.isRegister() ){ // 没有注册过信息
-                        displayFragment = new MasterHomeRegisterFragment();
-                        Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_LONG).show();
-                    }else if( ! master.isHaveLock() ) { // 没有关联门锁
-                        displayFragment = new MasterHomeRelatedToLock();
-                        Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_LONG).show();
-                    }else{
-                        displayFragment = new MasterHomeFragment();
+                            if( ! master.isRegister() ){ // 没有注册过信息
+                                display = new MasterHomeRegisterFragment();
+                                Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_SHORT).show();
+                            }else if( ! master.isHaveLock() ) { // 没有关联门锁
+                                display = new MasterHomeRelatedToLock();
+                                Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();
+                            }else{
+                                display = new MasterHomeFragment();
+                            }
+                            break;
+                        case R.id.navigation_dashboard:
+                            mTextMessage.setText(R.string.title_dashboard);
+                            break;
+                        case R.id.navigation_notifications:
+                            mTextMessage.setText(R.string.title_notifications);
+                            break;
                     }
 
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.id_framelayout_mainactivity,displayFragment);
-                    transaction.commit();
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
+                    if( display != null ) {
+                        currentFragment = display;
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
+                        transaction.commit();
+                    }else {
+
+                    }
+                    return false;
+                }
     };
 
     @Override
@@ -72,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
     }
 
 }

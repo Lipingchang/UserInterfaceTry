@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.example.userinterfacetry.bean.Master;
 
 
 public class MasterHomeRegisterFragment extends Fragment {
@@ -34,7 +37,14 @@ public class MasterHomeRegisterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void onStart() {
+        super.onStart();
+        // 在 绘图完成之后, 设置btn为不能点击状态
+        info.okToSubmit(register_btn);
+    }
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -45,7 +55,6 @@ public class MasterHomeRegisterFragment extends Fragment {
         masterrepwd_edittext= v.findViewById(R.id.id_master_home_register_repwd);
 
         info = new registerInfo();
-        info.okToSubmit(register_btn);
 
         mastername_edittext.addTextChangedListener(new TextWatcher() {
             @Override
@@ -110,9 +119,12 @@ public class MasterHomeRegisterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    MainActivity.master.setMaster(info.name,info.pwd);
+                    Master master  = Master.getMasterInstance();
+                    master.setMaster(info.name,info.pwd);
+                    Toast.makeText(MainActivity.mainContext,"register master success",Toast.LENGTH_LONG).show();
                 }catch (Exception e){
-
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.mainContext,"register master fail",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -122,7 +134,10 @@ public class MasterHomeRegisterFragment extends Fragment {
     public class registerInfo{
         String name,pwd,repwd;
         void okToSubmit(Button b){
-            if( name!=null && pwd!=null && repwd!=null && pwd.equals(repwd)){
+            if( name!=null && !name.equals("")
+                    && pwd!=null && !pwd.equals("")
+                    && repwd!=null && !repwd.equals("")
+                    && pwd.equals(repwd)){
                 b.setClickable(true);
                 b.setBackground(getResources().getDrawable(R.drawable.enabled_btn));
 
