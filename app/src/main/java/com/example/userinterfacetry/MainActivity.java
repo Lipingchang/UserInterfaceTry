@@ -15,7 +15,20 @@ import android.widget.Toast;
 
 import com.example.userinterfacetry.bean.Master;
 
-public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener,MasterHomeRegisterFragment.RegisterOverListener{
+    @Override
+    public void MasterRegisterOK(){
+        // 刷新内存中的 master
+        Master.freshInstance();
+        Fragment display = null;
+        // 把关联锁的页面替换上去
+        display = new MasterHomeRelatedToLock();
+        currentFragment = display;
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
+        transaction.commit();
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 

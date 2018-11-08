@@ -1,6 +1,7 @@
 package com.example.userinterfacetry;
 
 
+import android.content.Context;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,9 +32,6 @@ public class MasterHomeRegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
     }
 
     @Override
@@ -122,6 +120,7 @@ public class MasterHomeRegisterFragment extends Fragment {
                     Master master  = Master.getMasterInstance();
                     master.setMaster(info.name,info.pwd);
                     Toast.makeText(MainActivity.mainContext,"register master success",Toast.LENGTH_LONG).show();
+                    MasterRegisterOKListener.MasterRegisterOK();
                 }catch (Exception e){
                     e.printStackTrace();
                     Toast.makeText(MainActivity.mainContext,"register master fail",Toast.LENGTH_LONG).show();
@@ -150,4 +149,21 @@ public class MasterHomeRegisterFragment extends Fragment {
         }
     }
 
+
+    // 用户注册完成 回调 父Activity中的方法
+    public interface RegisterOverListener {
+        void MasterRegisterOK();
+    }
+
+    RegisterOverListener MasterRegisterOKListener;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            MasterRegisterOKListener = (RegisterOverListener) context;
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new ClassCastException(context.toString() + " must implement OnButton2ClickListener");
+        }
+    }
 }

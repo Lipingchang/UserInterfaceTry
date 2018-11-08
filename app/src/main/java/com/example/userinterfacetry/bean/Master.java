@@ -28,6 +28,10 @@ public class Master {
         }
         return masterInstance;
     }
+    public static Master freshInstance(){
+        masterInstance = new Master();
+        return  masterInstance;
+    }
 
     private Master(){
          try {
