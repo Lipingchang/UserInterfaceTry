@@ -9,4 +9,7 @@
     <string name="nomeanning">detailsdetailsdetailsdetails</string>
     <string name="menue_detail">详情</string>
     <string name="last_use">最后使用时间：</string>
+    <string name="register_title">注册个账号</string>
+    <string name="related_lock_title">关联下门锁</string>
+    <string name="guest_card_title">我拥有的副卡</string>
 </resources>
