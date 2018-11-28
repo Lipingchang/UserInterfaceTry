@@ -5,11 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         Fragment display = null;
         // 把关联锁的页面替换上去
         display = new MasterHomeRelatedToLock();
+        tv_title.setText(mainContext.getResources().getText(R.string.related_lock_title));
         currentFragment = display;
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
@@ -37,15 +40,17 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     static public Context mainContext;
     static public boolean DoingRegister = false; // 当 MasterHomeRelatedToLock 中的按钮按下的时候,改成true,这样的话,可以让apduService知道可以把秘钥信息发送出去.
 
-    private TextView mTextMessage;
+    private TextView tv_title;
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
+    private BottomNavigationView navigation;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    mTextMessage.setText("");
+                    System.out.println( navigation.getSelectedItemId() );
+
                     Fragment display = null; // 将要展示的fragment:
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
@@ -53,9 +58,11 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                             Master master = Master.getMasterInstance();
 
                             if( ! master.isRegister() ){ // 没有注册过信息
+                                tv_title.setText(mainContext.getResources().getText(R.string.register_title));
                                 display = new MasterHomeRegisterFragment();
                                 Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_SHORT).show();
                             }else if( ! master.isHaveLock() ) { // 没有关联门锁
+                                tv_title.setText(mainContext.getResources().getText(R.string.related_lock_title));
                                 display = new MasterHomeRelatedToLock();
                                 Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();
                             }else{
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                             }
                             break;
                         case R.id.navigation_dashboard:
-                            //mTextMessage.setText(R.string.title_dashboard);
+                            tv_title.setText(mainContext.getResources().getText(R.string.guest_card_title));
                             display = new GuestCardListFragment();
                             break;
 //                        case R.id.navigation_notifications:
@@ -79,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                     }else {
 
                     }
-                    return false;
+                    return true;
                 }
     };
 
@@ -90,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         fragmentManager = getSupportFragmentManager();
         mainContext = this.getApplicationContext();
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        this.tv_title = (TextView)findViewById(R.id.tv_title);
+        this.navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
