@@ -20,12 +20,15 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.example.userinterfacetry.bean.SecondaryCard;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 public class GuestCardListFragment extends Fragment {
-    private List<ApplicationInfo> mAppList=getApplicationContext().getPackageManager().getInstalledApplications(0);
+    private List<SecondaryCard> mAppList;//=getApplicationContext().getPackageManager().getInstalledApplications(0);
 
     private AppAdapter mAdapter = new AppAdapter();
     private SwipeMenuListView listView;
@@ -48,6 +51,16 @@ public class GuestCardListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mAppList = new ArrayList<>();
+        mAppList.add(new SecondaryCard("小A的603", new Date(System.currentTimeMillis()-10000),true));
+        mAppList.add(new SecondaryCard("小B的501", new Date(System.currentTimeMillis()-200000),true));
+        mAppList.add(new SecondaryCard("小C的113", new Date(System.currentTimeMillis()-3000000),false));
+        mAppList.add(new SecondaryCard("小D的543", new Date(System.currentTimeMillis()-3000000),false));
+        mAppList.add(new SecondaryCard("小E的673", new Date(System.currentTimeMillis()-6000000),false));
+        mAppList.add(new SecondaryCard("小F的121", new Date(System.currentTimeMillis()-88000000),false));
+        mAppList.add(new SecondaryCard("小G的421", new Date(System.currentTimeMillis()-90000000),false));
+        mAppList.add(new SecondaryCard("小H的317", new Date(System.currentTimeMillis()-211100000),false));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_guest_card_list, container, false);
         listView = view.findViewById(R.id.listView);
@@ -60,12 +73,11 @@ public class GuestCardListFragment extends Fragment {
                 SwipeMenuItem openItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
+                openItem.setBackground(new ColorDrawable(getApplicationContext().getResources().getColor(R.color.colorPrimary)));
                 // set item width
                 openItem.setWidth(dp2px(90));
                 // set item title
-                openItem.setTitle("Open");
+                openItem.setTitle(getApplicationContext().getResources().getString(R.string.menue_detail));
                 // set item title fontsize
                 openItem.setTitleSize(18);
                 // set item title font color
@@ -80,9 +92,9 @@ public class GuestCardListFragment extends Fragment {
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
                 // set item width
-                deleteItem.setWidth(dp2px(90));
+                deleteItem.setWidth(dp2px(70));
                 // set a icon
-                deleteItem.setIcon(R.drawable.icons8_nfc_square_tag_100);
+                deleteItem.setIcon(R.drawable.trashbin);
                 // add to menu
                 menu.addMenuItem(deleteItem);
             }
@@ -118,7 +130,7 @@ public class GuestCardListFragment extends Fragment {
         }
 
         @Override
-        public ApplicationInfo getItem(int position) {
+        public SecondaryCard getItem(int position) {
             return mAppList.get(position);
         }
 
@@ -135,31 +147,23 @@ public class GuestCardListFragment extends Fragment {
                 new ViewHolder(convertView);
             }
             ViewHolder holder = (ViewHolder) convertView.getTag();
-            ApplicationInfo item = getItem(position);
-            holder.iv_icon.setImageDrawable(item.loadIcon(getApplicationContext().getPackageManager()));
-            holder.tv_name.setText(item.loadLabel(getApplicationContext().getPackageManager()));
-            holder.iv_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "iv_icon_click", Toast.LENGTH_SHORT).show();
-                }
-            });
-            holder.tv_name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),"iv_name_click",Toast.LENGTH_SHORT).show();
-                }
-            });
+            SecondaryCard item = getItem(position);
+            holder.iv_icon.setImageDrawable(item.getIcon());
+            holder.tv_name.setText(item.getName());
+            holder.tv_last_used_time.setText(item.getLastUseTime());
+
             return convertView;
         }
 
         class ViewHolder {
             ImageView iv_icon;
             TextView tv_name;
+            TextView tv_last_used_time;
 
             public ViewHolder(View view) {
                 iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
                 tv_name = (TextView) view.findViewById(R.id.tv_name);
+                tv_last_used_time = (TextView) view.findViewById(R.id.tv_last_use_time);
                 view.setTag(this);
             }
         }
