@@ -63,11 +63,12 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                             }
                             break;
                         case R.id.navigation_dashboard:
-                            mTextMessage.setText(R.string.title_dashboard);
+                            //mTextMessage.setText(R.string.title_dashboard);
+                            display = new GuestCardListFragment();
                             break;
-                        case R.id.navigation_notifications:
-                            mTextMessage.setText(R.string.title_notifications);
-                            break;
+//                        case R.id.navigation_notifications:
+//                            mTextMessage.setText(R.string.title_notifications);
+//                            break;
                     }
 
                     if( display != null ) {
