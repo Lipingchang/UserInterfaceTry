@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     static public Context mainContext;
     static public boolean DoingRegister = false; // 当 MasterHomeRelatedToLock 中的按钮按下的时候,改成true,这样的话,可以让apduService知道可以把秘钥信息发送出去.
 
-    private TextView mTextMessage;
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
 
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    mTextMessage.setText("");
                     Fragment display = null; // 将要展示的fragment:
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
@@ -90,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         fragmentManager = getSupportFragmentManager();
         mainContext = this.getApplicationContext();
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
