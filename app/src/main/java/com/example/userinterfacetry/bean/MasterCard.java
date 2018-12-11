@@ -3,6 +3,7 @@ package com.example.userinterfacetry.bean;
 import android.content.Context;
 
 import com.example.userinterfacetry.MainActivity;
+import com.example.userinterfacetry.UtilTools;
 import com.google.gson.Gson;
 
 import org.apache.commons.io.IOUtils;
@@ -10,30 +11,30 @@ import org.apache.commons.io.IOUtils;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Master {
+public class MasterCard {
     static final public String MASTER_SAVE_FILE = "MASTERINFO";
-    static private Master masterInstance;
+    static private MasterCard masterCardInstance;
 
     private boolean register = false;       // name 和 pwd 有没有设置
     private boolean haveLock = false;       // masterid 和 lockid 有没有设置  在和pn532关联之后才会初始化.
 
     private String masterName = "not set";
     private String masterPwd = "not set";
-    private int    masterId = -1;
+    private byte    masterId = 1; // TODO 是-1！！
     private String LockID = "not set";      //
 
-    public static Master getMasterInstance(){
-        if( masterInstance == null ){
-            masterInstance = new Master();
+    public static MasterCard getMasterCardInstance(){
+        if( masterCardInstance == null ){
+            masterCardInstance = new MasterCard();
         }
-        return masterInstance;
+        return masterCardInstance;
     }
-    public static Master freshInstance(){
-        masterInstance = new Master();
-        return  masterInstance;
+    public static MasterCard freshInstance(){
+        masterCardInstance = new MasterCard();
+        return masterCardInstance;
     }
 
-    private Master(){
+    private MasterCard(){
          try {
             InputStream inputfile =  MainActivity.mainContext.openFileInput(MASTER_SAVE_FILE);
 
@@ -84,7 +85,7 @@ public class Master {
 
     }
     // 设置和门锁关联
-    public void setLock(String LockID,int masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
+    public void setLock(String LockID,byte masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
         this.LockID = LockID;
         this.masterId = masterId;
 
@@ -95,12 +96,14 @@ public class Master {
         out.close();
         this.haveLock = true;
     }
-
+    public boolean ismyLock(byte[] inputLockID){
+        return haveLock && UtilTools.lockID2String(inputLockID).equals(this.LockID);
+    }
 }
 class savedata{
     private String masterName;
     private String masterPwd;
-    private int    masterId;
+    private byte    masterId;
     private String LockID = "not set";
 
 
@@ -127,11 +130,11 @@ class savedata{
         this.masterPwd = masterPwd;
     }
 
-    public int getMasterId() {
+    public byte getMasterId() {
         return masterId;
     }
 
-    public void setMasterId(int masterId) {
+    public void setMasterId(byte masterId) {
         this.masterId = masterId;
     }
 }

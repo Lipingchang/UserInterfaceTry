@@ -5,24 +5,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.userinterfacetry.bean.Master;
+import com.example.userinterfacetry.bean.MasterCard;
 
 public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener,MasterHomeRegisterFragment.RegisterOverListener{
     public static String LogFileName = "logfile.txt";
     @Override
     public void MasterRegisterOK(){
         // 刷新内存中的 master
-        Master.freshInstance();
+        MasterCard.freshInstance();
         Fragment display = null;
         // 把关联锁的页面替换上去
         display = new MasterHomeRelatedToLock();
@@ -56,13 +54,13 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
                             // 检查有没有注册过
-                            Master master = Master.getMasterInstance();
+                            MasterCard masterCard = MasterCard.getMasterCardInstance();
 
-                            if( ! master.isRegister() ){ // 没有注册过信息
+                            if( ! masterCard.isRegister() ){ // 没有注册过信息
                                 tv_title.setText(mainContext.getResources().getText(R.string.register_title));
                                 display = new MasterHomeRegisterFragment();
                                 Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_SHORT).show();
-                            }else if( ! master.isHaveLock() ) { // 没有关联门锁
+                            }else if( ! masterCard.isHaveLock() ) { // 没有关联门锁
                                 tv_title.setText(mainContext.getResources().getText(R.string.related_lock_title));
                                 display = new MasterHomeRelatedToLock();
                                 Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();

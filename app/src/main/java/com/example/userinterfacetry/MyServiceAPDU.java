@@ -1,21 +1,17 @@
 package com.example.userinterfacetry;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import com.example.userinterfacetry.bean.GuestCardManager;
+import com.example.userinterfacetry.bean.MasterCard;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,13 +41,24 @@ public class MyServiceAPDU extends HostApduService {
     final static byte ReceiveOKHead   =           (byte)0x66;
     final static byte  AIDHead  =                 (byte)0x00;
 
+    final static byte MasterMode =                 (byte)0x01;
+    final static byte GuestMode =                 (byte)0x02;
+
+
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
         Log.d(TAG,"process input apdu:"+bytesToHex(commandApdu));
-        // 拿出 收到的APDU的 第一个 Byte (Head) ，然后分发给不同的 方法:
+        // 如果没关联锁 也 没有有效的副卡 退出
+        MasterCard card = MasterCard.getMasterCardInstance();
+        if( !(GuestCardManager.hasValidCard() || card.isHaveLock()) ){
+            return new byte[]{ ByeByeHead};
+        }
+        // 无效数据
         if( commandApdu==null || commandApdu.length==0)
             return new byte[]{ReceiveFuckHead};
 
+
+        // 拿出 收到的APDU的 第一个 Byte (Head) ，然后分发给不同的 方法:
         byte head = commandApdu[0]; Log.d(TAG,"apdu head:"+head);
         byte re[] = null;
 
@@ -60,7 +67,7 @@ public class MyServiceAPDU extends HostApduService {
                 re = new byte[]{StartAuthHead};     // 向pn532发起开始认证的请求
                 break;
             case LockIDHead:                        // 收到的是LockID，就开始在本机中查找密码. 然后返回发送给pn532的认证用的数组
-                re = makeAccessRequest(commandApdu);
+                re = makeAccessRequest(commandApdu); // TODO ???
         }
 
         Log.d(TAG,"reply bytes:"+ bytesToHex(re));
@@ -68,11 +75,27 @@ public class MyServiceAPDU extends HostApduService {
     }
 
     private byte[] makeAccessRequest(byte[] apdu){
+        byte[] accessRequest = new byte[3];
+        accessRequest[0] = AccessRequestHead;
+
         // 先从apdu中拿出 LockID
         byte[] LockID = Arrays.copyOfRange(apdu,1,apdu.length); Log.d(TAG,"LockID:"+bytesToHex(LockID));
         // 然后到 我保存的密码中去找这个ID的锁
+        MasterCard masterCard = MasterCard.getMasterCardInstance();
+        if ( masterCard.ismyLock(LockID) ){
+            // 是主人的锁：
+            accessRequest[1] = MasterMode;
+            accessRequest[2] = (byte)masterCard.getMasterId();
+            accessRequest = ArrayUtils.addAll(accessRequest,UtilTools.pwd2HexByte(masterCard.getMasterPwd()));
 
-        return null;
+        }else if( GuestCardManager.containLockID(LockID)){
+            // 是别人家 的锁
+            // TODO
+        }else{
+            // 不能开的锁
+            // TODO
+        }
+        return accessRequest;
     }
 
 
@@ -122,6 +145,9 @@ public class MyServiceAPDU extends HostApduService {
     public void onCreate() {
         super.onCreate();
         // 启动主activity
+        startUserInterface();
+    }
+    private void startUserInterface(){
         Intent startMain = new Intent(getBaseContext(),MainActivity.class);
         startMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
