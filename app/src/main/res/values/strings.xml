@@ -12,4 +12,10 @@
     <string name="register_title">注册个账号</string>
     <string name="related_lock_title">关联下门锁</string>
     <string name="guest_card_title">我拥有的副卡</string>
+
+    <string name="aiddescription">apdu Service</string>
+    <string name="aiddescriptionservice">apdu Service Name</string>
+    <string name="keynotfound">找不到要删除的内容</string>
+    <string name="keyduplicated">内容重复</string>
+
 </resources>

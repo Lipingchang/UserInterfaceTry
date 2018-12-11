@@ -2,7 +2,9 @@ package com.example.userinterfacetry;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,38 +16,65 @@ import android.widget.TextView;
 
 
 public class MasterHomeRelatedToLock extends Fragment {
-    private Button related_btn ;
+    private android.support.v7.widget.AppCompatButton related_btn ;
     private TextView info_textview;
+    private View layout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
 
-    @SuppressLint("ClickableViewAccessibility") // TODO ??performClick()??
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_master_home_related_to_lock,container,false);
-        related_btn = v.findViewById(R.id.id_master_home_related_to_lock_btn1);
-        info_textview = v.findViewById(R.id.id_master_home_related_to_lock_textview1);
-        related_btn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                if( action == MotionEvent.ACTION_BUTTON_PRESS){// 按下
-                    MainActivity.DoingRegister = true;
-                    info_textview.setText("靠近锁!");
-                }else{
-                    MainActivity.DoingRegister = false;
-                    info_textview.setText("");
-                }
-                return false;
-            }
-
-
-        });
+        this.layout = v;
         return inflater.inflate(R.layout.fragment_master_home_related_to_lock, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        info_textview = getActivity().findViewById(R.id.id_master_home_related_to_lock_textview1);
+        related_btn =  getActivity().findViewById(R.id.id_master_home_related_to_lock_btn1);
+
+        //related_btn.setBackgroundDrawable(getActivity().getDrawable(R.drawable.handshake));
+        related_btn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    info_textview.setText("靠近门锁");
+                    MainActivity.DoingRegister = true;
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    info_textview.setText("按住Button之后贴近门锁来认证");
+                    MainActivity.DoingRegister = false;
+                }
+                related_btn.performClick();
+                return true;
+            }
+        });
+    }
+}
+class TouchableButton extends android.support.v7.widget.AppCompatButton{
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    public TouchableButton(Context context) {
+        super(context);
+    }
+
+    @Override
+    public void setOnTouchListener(OnTouchListener l) {
+        super.setOnTouchListener(l);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        System.out.println("sadf");
+        return super.onTouchEvent(event);
+    }
 }

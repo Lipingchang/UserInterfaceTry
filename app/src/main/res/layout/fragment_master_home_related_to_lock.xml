@@ -10,19 +10,31 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="50sp"
-        android:text="00"
+        android:textSize="35sp"
+        android:textAlignment="center"
+        android:text="按住Button之后贴近门锁来认证"
         />
 
-
-    <Button
-        android:id="@+id/id_master_home_related_to_lock_btn1"
-        android:layout_gravity="center"
-        android:text="按住Button之后贴近门锁来认证"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:width="300dp"
-        android:height="300dp"
-        />
+        android:layout_gravity="center"
+        >
+        <ImageView
+            android:id="@+id/id_master_home_relate_to_lock_iv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/id_master_home_related_to_lock_btn1"
+            android:layout_gravity="center"
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="300dp"
+            android:height="300dp"
+            android:background="@drawable/simple_button_style"
+            />
+    </RelativeLayout>
+
 
 </FrameLayout>

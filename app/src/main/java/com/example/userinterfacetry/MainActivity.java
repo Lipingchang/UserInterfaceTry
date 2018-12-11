@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.userinterfacetry.bean.Master;
 
 public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener,MasterHomeRegisterFragment.RegisterOverListener{
+    public static String LogFileName = "logfile.txt";
     @Override
     public void MasterRegisterOK(){
         // 刷新内存中的 master
