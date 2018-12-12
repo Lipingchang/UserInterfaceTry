@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="@string/settings_card_data_settings"
+        android:title="门卡信息">
+
+        <EditTextPreference
+            android:focusedByDefault="true"
+            android:defaultValue=""
+            android:key="@string/settings_old_pwd_check"
+            android:title="修改我的门卡"
+            android:dialogTitle="输入旧密码"
+            android:inputType="textPassword"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            />
+        <EditTextPreference
+            android:key="@string/settings_new_master_pwd"
+            android:dialogTitle="改密码之后需要重新配对!"
+
+            android:title="改密码"
+            android:inputType="textPassword"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+
+            android:shouldDisableView="true"
+            android:enabled="false"
+            />
+        <EditTextPreference
+            android:key="@string/settings_new_master_name"
+            android:dialogTitle="改用户名之后需要重新配对!"
+
+            android:title="改用户名"
+            android:inputType="text"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+
+            android:shouldDisableView="true"
+            android:enabled="false"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="通用"
+        >
+        <SwitchPreference
+            android:key="@string/settings_log_pass_data"
+
+            android:title="记录日志"
+            android:summary="进出门的时候记录日志到手机上"
+            android:defaultValue="true"
+            >
+        </SwitchPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

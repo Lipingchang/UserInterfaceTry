@@ -20,7 +20,7 @@ public class MasterCard {
 
     private String masterName = "not set";
     private String masterPwd = "not set";
-    private byte    masterId = 1; // TODO 是-1！！
+    private byte    masterId = -1; //
     private String LockID = "not set";      //
 
     public static MasterCard getMasterCardInstance(){
@@ -84,6 +84,26 @@ public class MasterCard {
         this.register = true;
 
     }
+    public void setName(String name) throws Exception {
+        this.masterName = name;
+
+        OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String s = gson.toJson(this,this.getClass());
+        out.write(s.getBytes());
+        out.close();
+
+    }
+    public void setPwd(String name) throws Exception {
+        this.masterPwd = name;
+
+        OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String s = gson.toJson(this,this.getClass());
+        out.write(s.getBytes());
+        out.close();
+
+    }
     // 设置和门锁关联
     public void setLock(String LockID,byte masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
         this.LockID = LockID;
@@ -95,6 +115,17 @@ public class MasterCard {
         out.write(s.getBytes());
         out.close();
         this.haveLock = true;
+    }
+    public void setUnRelate() throws Exception{
+        masterCardInstance.haveLock = false;
+        masterCardInstance.LockID = "not set";
+        masterCardInstance.masterId = -1;
+
+        OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String s = gson.toJson(this,this.getClass());
+        out.write(s.getBytes());
+        out.close();
     }
     public boolean ismyLock(byte[] inputLockID){
         return haveLock && UtilTools.lockID2String(inputLockID).equals(this.LockID);

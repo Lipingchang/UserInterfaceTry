@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
                 transaction.commit();
-                tv_title.setText(mainContext.getResources().getText(R.string.master_home_title));
+                tv_title.setText( "Hi"+MasterCard.getMasterCardInstance().getMasterName() );
 
             }else
                 ((MasterHomeRelatedToLock)ff).setReRelated();
@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                                 display = new MasterHomeRelatedToLock();
                                 Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();
                             }else{
+                                tv_title.setText( "Hi"+MasterCard.getMasterCardInstance().getMasterName() );
                                 display = new MasterHomeFragment();
                             }
                             break;
