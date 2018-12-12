@@ -40,7 +40,6 @@ public class MasterHomeRelatedToLock extends Fragment {
         info_textview = getActivity().findViewById(R.id.id_master_home_related_to_lock_textview1);
         related_btn =  getActivity().findViewById(R.id.id_master_home_related_to_lock_btn1);
 
-        //related_btn.setBackgroundDrawable(getActivity().getDrawable(R.drawable.handshake));
         related_btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -56,25 +55,16 @@ public class MasterHomeRelatedToLock extends Fragment {
             }
         });
     }
-}
-class TouchableButton extends android.support.v7.widget.AppCompatButton{
-    @Override
-    public boolean performClick() {
-        return super.performClick();
+    public void setRelated(){
+        related_btn.setClickable(false);
+        info_textview.setText("关联成功");
+    }
+    public void setReRelated(){
+        related_btn.setClickable(false);
+        info_textview.setText("关联失败");
+        related_btn.setClickable(true);
     }
 
-    public TouchableButton(Context context) {
-        super(context);
-    }
 
-    @Override
-    public void setOnTouchListener(OnTouchListener l) {
-        super.setOnTouchListener(l);
-    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        System.out.println("sadf");
-        return super.onTouchEvent(event);
-    }
 }

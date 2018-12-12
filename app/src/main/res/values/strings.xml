@@ -12,6 +12,9 @@
     <string name="register_title">注册个账号</string>
     <string name="related_lock_title">关联下门锁</string>
     <string name="guest_card_title">我拥有的副卡</string>
+    <string name="master_home_title">我的主卡</string>
+
+    <string name="relate_fail">关联失败 重试</string>
 
     <string name="aiddescription">apdu Service</string>
     <string name="aiddescriptionservice">apdu Service Name</string>
