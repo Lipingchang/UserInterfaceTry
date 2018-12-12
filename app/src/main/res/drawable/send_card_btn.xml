@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/white">
+    <item>
+        <selector xmlns:android="http://schemas.android.com/apk/res/android" >
+            <!--<item-->
+                <!--android:drawable="@drawable/history_btn_png"-->
+                <!--android:state_checked="false"/>-->
+            <!--<item-->
+                <!--android:drawable="@color/colorAccent"-->
+                <!--android:state_checked="true" />-->
+            <item
+                android:drawable="@drawable/send_card_btn_png" />
+
+        </selector>
+    </item>
+</ripple>
