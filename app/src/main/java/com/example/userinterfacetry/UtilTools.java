@@ -1,5 +1,8 @@
 package com.example.userinterfacetry;
 
+import android.app.Service;
+import android.os.Vibrator;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -50,5 +53,17 @@ public class UtilTools {
     public static byte[] pwd2HexByte(String pwd){
         System.out.println(pwd);
         return pwd.getBytes( StandardCharsets.US_ASCII );
+    }
+    public static byte int2byte(int i ){
+        return (byte)( i & 0xff);
+    }
+    public static void longVibrator(){
+        Vibrator vibrator = (Vibrator)MainActivity.mainContext.getSystemService(Service.VIBRATOR_SERVICE);
+        vibrator.vibrate(800);
+    }
+    public static void doubleVibrator(){
+        Vibrator vibrator = (Vibrator)MainActivity.mainContext.getSystemService(Service.VIBRATOR_SERVICE);
+        vibrator.vibrate(new long[]{0,200,300,300},-1);
+
     }
 }

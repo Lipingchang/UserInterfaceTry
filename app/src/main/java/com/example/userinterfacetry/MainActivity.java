@@ -9,20 +9,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.userinterfacetry.bean.MasterCard;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener,MasterHomeRegisterFragment.RegisterOverListener{
     public static String LogFileName = "logfile.txt";
+    public final static String TAG  = "MainActiviy";
     @Override
     public void MasterRegisterOK(){
         // 刷新内存中的 master
         MasterCard.freshInstance();
         Fragment display = null;
-        // 把关联锁的页面替换上去
         display = new MasterHomeRelatedToLock();
         tv_title.setText(mainContext.getResources().getText(R.string.related_lock_title));
         currentFragment = display;
@@ -35,8 +38,40 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     public void onFragmentInteraction(Uri uri) {
 
     }
+    // 返回关联结果,修改页面:
+    public void relateResult(boolean success){
+        Fragment ff = getVisiableFragment();
+        if(ff.getClass().equals(  MasterHomeRelatedToLock.class)  ){
+            if( success ){
+                ((MasterHomeRelatedToLock)ff).setRelated();
+                currentFragment = new MasterHomeFragment();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
+                transaction.commit();
+                tv_title.setText(mainContext.getResources().getText(R.string.master_home_title));
 
-    static public Context mainContext;
+            }else
+                ((MasterHomeRelatedToLock)ff).setReRelated();
+        }else{
+            Log.e(TAG,"当前页面不是 关联锁的Fragment!!");
+        }
+    }
+
+    public Fragment getVisiableFragment() {
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for(int i = 0; i < fragments.size(); i++) {
+            Fragment fragment = fragments.get(i);
+            if(fragment!=null && fragment.isAdded()&&fragment.isVisible() ) {
+               Log.e(TAG,"related fragment:"+fragment.getClass()+" ");
+                return fragment;
+            }
+        }
+        return null;
+    }
+
+
+
+    static public MainActivity mainContext;
     static public boolean DoingRegister = false; // 当 MasterHomeRelatedToLock 中的按钮按下的时候,改成true,这样的话,可以让apduService知道可以把秘钥信息发送出去.
 
     private TextView tv_title;
@@ -94,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
-        mainContext = this.getApplicationContext();
+        mainContext = this;
 
         this.tv_title = (TextView)findViewById(R.id.tv_title);
         this.navigation = (BottomNavigationView) findViewById(R.id.navigation);

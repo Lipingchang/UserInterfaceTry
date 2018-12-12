@@ -1,10 +1,13 @@
 package com.example.userinterfacetry;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
@@ -43,15 +46,20 @@ public class MyServiceAPDU extends HostApduService {
 
     final static byte MasterMode =                 (byte)0x01;
     final static byte GuestMode =                 (byte)0x02;
+    final static byte StartRelateHead = (byte) 0x78;
+    final static byte RelateAcceptHead = (byte) 0x79;
+    final static byte[] RelateResult_Success = {(byte)0x80,(byte)0x11};
+    final static byte[] RelateResult_Fail = {(byte)0x80,(byte)0x22};
 
 
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
         Log.d(TAG,"process input apdu:"+bytesToHex(commandApdu));
-        // 如果没关联锁 也 没有有效的副卡 退出
+        //   没关联锁 也 没有有效的副卡  也 不在配对模式  退出
         MasterCard card = MasterCard.getMasterCardInstance();
-        if( !(GuestCardManager.hasValidCard() || card.isHaveLock()) ){
-            return new byte[]{ ByeByeHead};
+        if( !GuestCardManager.hasValidCard() && !card.isHaveLock()  && !MainActivity.DoingRegister ){
+            return byeByePN532();
+
         }
         // 无效数据
         if( commandApdu==null || commandApdu.length==0)
@@ -64,10 +72,17 @@ public class MyServiceAPDU extends HostApduService {
 
         switch (head){
             case AIDHead:                           // 收到的是AID，手机刚刚和pn532接触
-                re = new byte[]{StartAuthHead};     // 向pn532发起开始认证的请求
+                if( MainActivity.DoingRegister ){   // 关联模式
+                    re = makeRelateRequest();
+                }else{
+                    re = new byte[]{StartAuthHead};     // 向pn532发起开始认证的请求
+                }
                 break;
             case LockIDHead:                        // 收到的是LockID，就开始在本机中查找密码. 然后返回发送给pn532的认证用的数组
                 re = makeAccessRequest(commandApdu); // TODO ???
+                break;
+            case RelateAcceptHead:  // todo 没有保存状态,如果上一个应答不是 要关联的呢?
+                re = setRelateSuccess(commandApdu);
         }
 
         Log.d(TAG,"reply bytes:"+ bytesToHex(re));
@@ -86,7 +101,11 @@ public class MyServiceAPDU extends HostApduService {
             // 是主人的锁：
             accessRequest[1] = MasterMode;
             accessRequest[2] = (byte)masterCard.getMasterId();
-            accessRequest = ArrayUtils.addAll(accessRequest,UtilTools.pwd2HexByte(masterCard.getMasterPwd()));
+            accessRequest = ArrayUtils.addAll(
+                    accessRequest,
+                    UtilTools.pwd2HexByte(masterCard.getMasterPwd()
+                    )
+            );
 
         }else if( GuestCardManager.containLockID(LockID)){
             // 是别人家 的锁
@@ -96,6 +115,48 @@ public class MyServiceAPDU extends HostApduService {
             // TODO
         }
         return accessRequest;
+    }
+    private byte[] makeRelateRequest(){
+        byte[] relateRequest = new byte[2];
+        MasterCard c = MasterCard.getMasterCardInstance();
+        relateRequest[0] = StartRelateHead;
+        relateRequest[1] = UtilTools.int2byte(
+                c.getMasterPwd().length()
+        );
+        relateRequest = ArrayUtils.addAll(
+                relateRequest,
+                UtilTools.pwd2HexByte(
+                        c.getMasterPwd()
+                )
+        );
+        relateRequest = ArrayUtils.addAll(relateRequest,
+                UtilTools.pwd2HexByte(
+                        c.getMasterName()
+                )
+        );
+
+        return  relateRequest;
+    }
+    private byte[] setRelateSuccess(byte[] commandApdu){
+        byte masterID = commandApdu[1];
+        byte[] lockID_b = Arrays.copyOfRange(commandApdu,2,commandApdu.length);
+        try {
+            MasterCard.getMasterCardInstance().setLock(UtilTools.lockID2String(lockID_b), masterID);
+            UtilTools.longVibrator();
+            MainActivity.mainContext.relateResult(true);
+
+        }catch (Exception e){
+            // 保存失败
+            Toast.makeText(MainActivity.mainContext,R.string.relate_fail,Toast.LENGTH_SHORT);
+            UtilTools.doubleVibrator();
+            MainActivity.mainContext.relateResult(false);
+            return RelateResult_Fail ;
+
+        }
+        return RelateResult_Success;
+    }
+    private byte[] byeByePN532(){
+        return new byte[]{ ByeByeHead};
     }
 
 
