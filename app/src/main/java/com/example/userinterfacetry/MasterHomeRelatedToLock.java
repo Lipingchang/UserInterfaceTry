@@ -57,10 +57,14 @@ public class MasterHomeRelatedToLock extends Fragment {
     }
     public void setRelated(){
         related_btn.setClickable(false);
+        MainActivity.DoingRegister = false;
+
         info_textview.setText("关联成功");
     }
     public void setReRelated(){
         related_btn.setClickable(false);
+        MainActivity.DoingRegister = false;
+
         info_textview.setText("关联失败");
         related_btn.setClickable(true);
     }

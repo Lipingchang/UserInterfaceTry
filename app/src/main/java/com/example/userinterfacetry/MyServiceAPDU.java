@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
+import com.example.userinterfacetry.bean.UserLog;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -18,6 +19,8 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+
+import static com.example.userinterfacetry.UtilTools.bytesToHex;
 
 public class MyServiceAPDU extends HostApduService {
     public static String TAG = "MyServiceAPUD";
@@ -33,10 +36,17 @@ public class MyServiceAPDU extends HostApduService {
     final static byte AccessRequestHead =         (byte)0x02;
     final static byte LockIDHead =                (byte)0x01;
     final static byte AccessReplyHead =           (byte)0x03;
+        final static byte WelcomeMaster = (byte)0x01;
+        final static byte WelcomeGuest = (byte)0x02;
+        final static byte AccessDeny = (byte)0x03;
+
     final static byte GetRecentRecordHead =       (byte)0x04;
-    final static byte SendRecentAccessRecord =    (byte)0x05;
-    final static byte SendRecentRefuseRecord =    (byte)0x06;
-    final static byte SendRecentKeyAccessRecord = (byte)0x07;
+
+    final static byte SendRecentRecord = (byte)0x15;
+        final static byte SendRecentAccessRecord =    (byte)0x05;
+        final static byte SendRecentRefuseRecord =    (byte)0x06;
+        final static byte SendRecentKeyAccessRecord = (byte)0x07;
+
     final static byte ByeByeHead =                (byte)0x08;
 
     final static byte StartAuthHead =             (byte)0x90;
@@ -51,12 +61,13 @@ public class MyServiceAPDU extends HostApduService {
     final static byte[] RelateResult_Success = {(byte)0x80,(byte)0x11};
     final static byte[] RelateResult_Fail = {(byte)0x80,(byte)0x22};
 
-
+    public static Service  serviceContext = null;
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
         Log.d(TAG,"process input apdu:"+bytesToHex(commandApdu));
         //   没关联锁 也 没有有效的副卡  也 不在配对模式  退出
         MasterCard card = MasterCard.getMasterCardInstance();
+        Log.d(TAG,GuestCardManager.hasValidCard() +" "+ card.isHaveLock() +" "+ MainActivity.DoingRegister);
         if( !GuestCardManager.hasValidCard() && !card.isHaveLock()  && !MainActivity.DoingRegister ){
             return byeByePN532();
 
@@ -81,8 +92,18 @@ public class MyServiceAPDU extends HostApduService {
             case LockIDHead:                        // 收到的是LockID，就开始在本机中查找密码. 然后返回发送给pn532的认证用的数组
                 re = makeAccessRequest(commandApdu); // TODO ???
                 break;
+            case AccessReplyHead:
+                re = handleAccessReply(commandApdu);
+                break;
             case RelateAcceptHead:  // todo 没有保存状态,如果上一个应答不是 要关联的呢?
                 re = setRelateSuccess(commandApdu);
+                break;
+            case SendRecentAccessRecord:
+            case SendRecentRefuseRecord:
+            case SendRecentKeyAccessRecord:
+            case SendRecentRecord:
+                re = saveRecentRecord(commandApdu);
+                break;
         }
 
         Log.d(TAG,"reply bytes:"+ bytesToHex(re));
@@ -103,8 +124,7 @@ public class MyServiceAPDU extends HostApduService {
             accessRequest[2] = (byte)masterCard.getMasterId();
             accessRequest = ArrayUtils.addAll(
                     accessRequest,
-                    UtilTools.pwd2HexByte(masterCard.getMasterPwd()
-                    )
+                    UtilTools.pwd2HexByte(masterCard.getMasterPwd())
             );
 
         }else if( GuestCardManager.containLockID(LockID)){
@@ -159,7 +179,51 @@ public class MyServiceAPDU extends HostApduService {
         return new byte[]{ ByeByeHead};
     }
 
+    private byte[] saveRecentRecord(byte[] commandApdu){
+        // 收到门锁发送的 最近的用户的列表：
+        // 2 记录日志
+        int start = 1;
+        while(true){
+            try {
+               UserLog k = UserLog.byte2Log(Arrays.copyOfRange(commandApdu,start,commandApdu.length));
+               start += k.rawdatalen;
+            }catch (Exception e){
+                break;
+            }
+        }
+        return byeByePN532();
+    }
 
+
+    private byte[] handleAccessReply(byte[] commandApdu){
+        // 1 成功进门
+        byte result = commandApdu[1];
+        // 取出 command Apdu 最后的语句
+        byte[] bytewords = Arrays.copyOfRange(commandApdu,2,commandApdu.length);
+        String words = UtilTools.hexByte2Pwd(bytewords);
+        switch (result) {
+            case WelcomeMaster:
+                UtilTools.longVibrator();
+                // 向门锁拿 最近的进门记录：
+                byte[] re = new byte[]{GetRecentRecordHead,
+                        UtilTools.int2byte(
+                                MasterCard.getMasterCardInstance().getMasterId())
+                };
+                re = ArrayUtils.addAll(re,UtilTools.pwd2HexByte(MasterCard.getMasterCardInstance().getMasterPwd()));
+                return re;
+
+            case AccessDeny:
+                UtilTools.doubleVibrator();
+                Toast.makeText(this,words,Toast.LENGTH_LONG).show();
+                break;
+            case WelcomeGuest:
+                UtilTools.longVibrator();
+                Toast.makeText(this,words,Toast.LENGTH_LONG).show();
+                break;
+        }
+        return byeByePN532();
+
+    }
 
 
 
@@ -181,16 +245,7 @@ public class MyServiceAPDU extends HostApduService {
             e.printStackTrace();
         }
     }
-    public static String bytesToHex(byte[] apdu){
-        if( apdu  == null ){
-            return "null apdu byte[]";
-        }
-        StringBuffer k = new StringBuffer("");
-        for( int i = 0; i < apdu.length; i++ ){
-            k.append(String.format("%02x ",apdu[i]));
-        }
-        return k.toString();
-    }
+
 
     @Override
     public void onDeactivated(int reason) {
@@ -198,6 +253,7 @@ public class MyServiceAPDU extends HostApduService {
     }
 
     public MyServiceAPDU() {
+        serviceContext = this;
         Log.d(TAG,"APDU Service start...");
 
     }
@@ -206,7 +262,7 @@ public class MyServiceAPDU extends HostApduService {
     public void onCreate() {
         super.onCreate();
         // 启动主activity
-        startUserInterface();
+        //startUserInterface();
     }
     private void startUserInterface(){
         Intent startMain = new Intent(getBaseContext(),MainActivity.class);

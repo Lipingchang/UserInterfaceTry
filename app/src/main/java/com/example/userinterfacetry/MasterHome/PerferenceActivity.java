@@ -80,16 +80,16 @@ public class PerferenceActivity extends PreferenceActivity
             if (key.equals(getString(R.string.settings_new_master_name))) {
                 String name = newmastername_et.getEditText().getText().toString();
 
-                MasterCard.getMasterCardInstance().setUnRelate();
                 MasterCard.getMasterCardInstance().setName(name);
+                MasterCard.getMasterCardInstance().setUnRelate();
                 Toast.makeText(this,getString(R.string.change_settings_success), Toast.LENGTH_SHORT).show();
                 return true;
             }
             if (key.equals(getString(R.string.settings_new_master_pwd))) {
                 String pwd = newmasterpwd_et.getEditText().getText().toString();
 
-                MasterCard.getMasterCardInstance().setUnRelate();
                 MasterCard.getMasterCardInstance().setPwd(pwd);
+                MasterCard.getMasterCardInstance().setUnRelate();
                 Toast.makeText(this,getString(R.string.change_settings_success), Toast.LENGTH_SHORT).show();
                 return true;
             }
