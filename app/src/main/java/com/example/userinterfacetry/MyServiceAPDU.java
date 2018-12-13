@@ -51,12 +51,13 @@ public class MyServiceAPDU extends HostApduService {
     final static byte[] RelateResult_Success = {(byte)0x80,(byte)0x11};
     final static byte[] RelateResult_Fail = {(byte)0x80,(byte)0x22};
 
-
+    public static Service  serviceContext = null;
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
         Log.d(TAG,"process input apdu:"+bytesToHex(commandApdu));
         //   没关联锁 也 没有有效的副卡  也 不在配对模式  退出
         MasterCard card = MasterCard.getMasterCardInstance();
+        Log.d(TAG,GuestCardManager.hasValidCard() +" "+ card.isHaveLock() +" "+ MainActivity.DoingRegister);
         if( !GuestCardManager.hasValidCard() && !card.isHaveLock()  && !MainActivity.DoingRegister ){
             return byeByePN532();
 
@@ -83,6 +84,9 @@ public class MyServiceAPDU extends HostApduService {
                 break;
             case RelateAcceptHead:  // todo 没有保存状态,如果上一个应答不是 要关联的呢?
                 re = setRelateSuccess(commandApdu);
+            case GetRecentRecordHead:
+                saveRecentRecord(commandApdu);
+                break;
         }
 
         Log.d(TAG,"reply bytes:"+ bytesToHex(re));
@@ -159,7 +163,14 @@ public class MyServiceAPDU extends HostApduService {
         return new byte[]{ ByeByeHead};
     }
 
-
+    private byte[] saveRecentRecord(byte[] commandApdu){
+        // 收到门锁发送的 最近的用户的列表：
+        // 1 成功进门
+        // 2 记录日志
+        UtilTools.longVibrator();
+        // TODO 2 没写
+        return byeByePN532();
+    }
 
 
 
@@ -198,6 +209,7 @@ public class MyServiceAPDU extends HostApduService {
     }
 
     public MyServiceAPDU() {
+        serviceContext = this;
         Log.d(TAG,"APDU Service start...");
 
     }
@@ -206,7 +218,7 @@ public class MyServiceAPDU extends HostApduService {
     public void onCreate() {
         super.onCreate();
         // 启动主activity
-        startUserInterface();
+        //startUserInterface();
     }
     private void startUserInterface(){
         Intent startMain = new Intent(getBaseContext(),MainActivity.class);

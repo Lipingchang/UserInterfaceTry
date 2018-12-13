@@ -1,8 +1,10 @@
 package com.example.userinterfacetry.bean;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.userinterfacetry.MainActivity;
+import com.example.userinterfacetry.MyServiceAPDU;
 import com.example.userinterfacetry.UtilTools;
 import com.google.gson.Gson;
 
@@ -12,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class MasterCard {
+    static final String TAG = "MasterCard";
     static final public String MASTER_SAVE_FILE = "MASTERINFO";
     static private MasterCard masterCardInstance;
 
@@ -36,8 +39,12 @@ public class MasterCard {
 
     private MasterCard(){
          try {
-            InputStream inputfile =  MainActivity.mainContext.openFileInput(MASTER_SAVE_FILE);
-
+            InputStream inputfile = null;
+            if( MainActivity.mainContext == null ){
+                inputfile = MyServiceAPDU.serviceContext.openFileInput(MASTER_SAVE_FILE);
+            }else{
+                inputfile =  MainActivity.mainContext.openFileInput(MASTER_SAVE_FILE);;
+            }
             String s = IOUtils.toString(inputfile);
             Gson gson = new Gson();
             savedata data = gson.fromJson(s,savedata.class);
@@ -50,6 +57,7 @@ public class MasterCard {
              haveLock = (this.masterId != -1 && (!this.LockID.equals("not set")));// master 有没有 和门锁关联过。
          }catch (Exception e){
              //file not Found!
+             Log.e(TAG,e.getMessage());
              register = false;
              haveLock = false;
         }
@@ -75,13 +83,14 @@ public class MasterCard {
     public void setMaster(String name,String pwd) throws Exception {
         this.masterName = name;
         this.masterPwd = pwd;
+        this.register = true;
 
         OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String s = gson.toJson(this,this.getClass());
         out.write(s.getBytes());
         out.close();
-        this.register = true;
+
 
     }
     public void setName(String name) throws Exception {
@@ -108,13 +117,13 @@ public class MasterCard {
     public void setLock(String LockID,byte masterId) throws Exception{  // 给 apduService 用, 在接受到 pn532 返回后的lockid和masterid后设置下.
         this.LockID = LockID;
         this.masterId = masterId;
+        this.haveLock = true;
 
         OutputStream out = MainActivity.mainContext.openFileOutput(MASTER_SAVE_FILE, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String s = gson.toJson(this,this.getClass());
         out.write(s.getBytes());
         out.close();
-        this.haveLock = true;
     }
     public void setUnRelate() throws Exception{
         masterCardInstance.haveLock = false;
