@@ -66,4 +66,31 @@ public class UtilTools {
         vibrator.vibrate(new long[]{0,200,300,300},-1);
 
     }
+    public static int byte2int(byte b){
+        int i = 0;
+        i = (b>>4) & 0x0f;
+        i = i<<4;
+        i += (b & 0x0f);
+        return i;
+    }
+    public static long bytes2long(byte[] bytes){
+        long ii = 0;
+        for( int i = 7; i>=0; i--){
+
+            ii = (ii<<8) + ((int)(bytes[i]) & 0xff );
+            System.out.printf("==> %x %x\n",bytes[i] ,ii);
+        }
+        return ii;
+    }
+    public static String bytesToHex(byte[] apdu){
+        if( apdu  == null ){
+            return "null apdu byte[]";
+        }
+        StringBuffer k = new StringBuffer("");
+        for( int i = 0; i < apdu.length; i++ ){
+            k.append(String.format("%02x ",apdu[i]));
+        }
+        return k.toString();
+    }
+
 }
