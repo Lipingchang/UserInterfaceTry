@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
 import com.example.userinterfacetry.bean.UserLog;
+import com.example.userinterfacetry.utils.UtilTools;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import static com.example.userinterfacetry.UtilTools.bytesToHex;
+import static com.example.userinterfacetry.utils.UtilTools.bytesToHex;
 
 public class MyServiceAPDU extends HostApduService {
     public static String TAG = "MyServiceAPUD";

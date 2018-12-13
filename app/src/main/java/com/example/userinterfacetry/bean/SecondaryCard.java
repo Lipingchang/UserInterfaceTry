@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 
 import com.example.userinterfacetry.MainActivity;
 import com.example.userinterfacetry.R;
-import com.example.userinterfacetry.UtilTools;
+import com.example.userinterfacetry.utils.UtilTools;
 
 import java.util.Date;
 

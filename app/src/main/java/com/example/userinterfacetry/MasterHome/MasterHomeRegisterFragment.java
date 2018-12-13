@@ -1,4 +1,4 @@
-package com.example.userinterfacetry;
+package com.example.userinterfacetry.MasterHome;
 
 
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.userinterfacetry.MainActivity;
+import com.example.userinterfacetry.R;
+import com.example.userinterfacetry.utils.UtilTools;
 import com.example.userinterfacetry.bean.MasterCard;
 
 

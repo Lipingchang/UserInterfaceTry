@@ -1,4 +1,4 @@
-package com.example.userinterfacetry;
+package com.example.userinterfacetry.MasterHome;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.userinterfacetry.MasterHome.PerferenceActivity;
+import com.example.userinterfacetry.R;
 
 
 public class MasterHomeFragment extends Fragment implements View.OnClickListener{

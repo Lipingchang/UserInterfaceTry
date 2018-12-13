@@ -1,4 +1,4 @@
-package com.example.userinterfacetry;
+package com.example.userinterfacetry.MasterHome;
 
 
 import android.annotation.SuppressLint;
@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.userinterfacetry.MainActivity;
+import com.example.userinterfacetry.R;
 
 
 public class MasterHomeRelatedToLock extends Fragment {

@@ -1,7 +1,9 @@
-package com.example.userinterfacetry;
+package com.example.userinterfacetry.utils;
 
 import android.app.Service;
 import android.os.Vibrator;
+
+import com.example.userinterfacetry.MainActivity;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

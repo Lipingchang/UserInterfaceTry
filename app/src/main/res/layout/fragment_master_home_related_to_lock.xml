@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MasterHomeRelatedToLock">
+    tools:context=".MasterHome.MasterHomeRelatedToLock">
 
     <TextView
         android:id="@+id/id_master_home_related_to_lock_textview1"

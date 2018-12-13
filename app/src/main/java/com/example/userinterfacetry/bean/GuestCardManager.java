@@ -1,6 +1,6 @@
 package com.example.userinterfacetry.bean;
 
-import com.example.userinterfacetry.UtilTools;
+import com.example.userinterfacetry.utils.UtilTools;
 
 import java.util.ArrayList;
 import java.util.Date;

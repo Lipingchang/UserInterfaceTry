@@ -1,6 +1,5 @@
 package com.example.userinterfacetry;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +13,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.userinterfacetry.MasterHome.MasterHomeFragment;
+import com.example.userinterfacetry.MasterHome.MasterHomeRegisterFragment;
+import com.example.userinterfacetry.MasterHome.MasterHomeRelatedToLock;
 import com.example.userinterfacetry.bean.MasterCard;
 
 import java.util.List;

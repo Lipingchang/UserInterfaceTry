@@ -2,7 +2,7 @@ package com.example.userinterfacetry.bean;
 
 import android.util.Log;
 
-import com.example.userinterfacetry.UtilTools;
+import com.example.userinterfacetry.utils.UtilTools;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -63,3 +63,4 @@ enum UserType{
 enum PassType{
     Pass_e,Reject_e;
 }
+
