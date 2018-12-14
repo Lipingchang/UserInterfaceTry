@@ -10,4 +10,9 @@
     <color name="masterColor">#FFF5AF</color>
     <color name="guestColor">#C8DE8A</color>
     <color name="unknowUserColor">#F29B87</color>
+
+    <color name="line_color">#e7e7e7</color>
+    <color name="content_background">#f2f2f2</color>
+    <color name="solar_background">#009988</color>
+
 </resources>
