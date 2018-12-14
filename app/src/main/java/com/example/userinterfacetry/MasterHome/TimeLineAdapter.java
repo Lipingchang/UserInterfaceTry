@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.userinterfacetry.R;
+import com.example.userinterfacetry.bean.UserLog;
 import com.example.userinterfacetry.model.OrderStatus;
 import com.example.userinterfacetry.model.Orientation;
 import com.example.userinterfacetry.model.TimeLineModel;
@@ -16,6 +17,10 @@ import com.example.userinterfacetry.utils.VectorDrawableUtils;
 import com.github.vipulasri.timelineview.TimelineView;
 
 import java.util.List;
+
+import static com.example.userinterfacetry.bean.UserLog.UserType.Guest_e;
+import static com.example.userinterfacetry.bean.UserLog.UserType.Master_e;
+import static com.example.userinterfacetry.bean.UserLog.UserType.Unknow_e;
 
 /**
  * Created by HP-HP on 05-12-2015.
@@ -59,20 +64,31 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
         TimeLineModel timeLineModel = mFeedList.get(position);
 
-        if(timeLineModel.getStatus() == OrderStatus.INACTIVE) {
-            holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
-        } else if(timeLineModel.getStatus() == OrderStatus.ACTIVE) {
-            holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_active, R.color.colorPrimary));
-        } else {
-            holder.mTimelineView.setMarker(ContextCompat.getDrawable(mContext, R.drawable.ic_marker), ContextCompat.getColor(mContext, R.color.colorPrimary));
+        if(timeLineModel.getStatus() == UserLog.PassType.Reject_e) {
+            holder.mTimelineView.setMarker(this.mContext.getDrawable(R.drawable.forbiden));
+        } else if (timeLineModel.getStatus() == UserLog.PassType.Pass_e ) {
+            holder.mTimelineView.setMarker(this.mContext.getDrawable(R.drawable.pass));
         }
 
         if(!timeLineModel.getDate().isEmpty()) {
             holder.mDate.setVisibility(View.VISIBLE);
-            holder.mDate.setText(DateTimeUtils.parseDateTime(timeLineModel.getDate(), "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
+            holder.mDate.setText(timeLineModel.getDate());
         }
         else
             holder.mDate.setVisibility(View.GONE);
+
+        switch (timeLineModel.getUserType()) {
+            case Guest_e:
+                holder.card_view.setBackgroundColor(this.mContext.getColor(R.color.guestColor));
+                break;
+            case Master_e:
+                holder.card_view.setBackgroundColor(this.mContext.getColor(R.color.masterColor));
+                break;
+            case Unknow_e:
+                holder.card_view.setBackgroundColor(this.mContext.getColor(R.color.unknowUserColor));
+                break;
+
+        }
 
         holder.mMessage.setText(timeLineModel.getMessage());
     }
