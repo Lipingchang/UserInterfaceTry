@@ -1,4 +1,4 @@
-package com.example.userinterfacetry.MasterHome;
+package com.example.userinterfacetry.MasterHome.setting;
 
 import android.content.SharedPreferences;
 import android.nfc.Tag;

@@ -1,30 +1,24 @@
-package com.example.userinterfacetry.MasterHome;
+package com.example.userinterfacetry.MasterHome.loglist;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.userinterfacetry.R;
 import com.example.userinterfacetry.bean.UserLog;
-import com.example.userinterfacetry.model.OrderStatus;
 import com.example.userinterfacetry.model.Orientation;
 import com.example.userinterfacetry.model.TimeLineModel;
 import com.example.userinterfacetry.utils.UtilTools;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-
-import static com.example.userinterfacetry.model.Orientation.HORIZONTAL;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,7 +1,6 @@
-package com.example.userinterfacetry.MasterHome;
+package com.example.userinterfacetry.MasterHome.loglist;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,18 +8,11 @@ import android.view.ViewGroup;
 
 import com.example.userinterfacetry.R;
 import com.example.userinterfacetry.bean.UserLog;
-import com.example.userinterfacetry.model.OrderStatus;
 import com.example.userinterfacetry.model.Orientation;
 import com.example.userinterfacetry.model.TimeLineModel;
-import com.example.userinterfacetry.utils.DateTimeUtils;
-import com.example.userinterfacetry.utils.VectorDrawableUtils;
 import com.github.vipulasri.timelineview.TimelineView;
 
 import java.util.List;
-
-import static com.example.userinterfacetry.bean.UserLog.UserType.Guest_e;
-import static com.example.userinterfacetry.bean.UserLog.UserType.Master_e;
-import static com.example.userinterfacetry.bean.UserLog.UserType.Unknow_e;
 
 /**
  * Created by HP-HP on 05-12-2015.

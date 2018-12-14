@@ -1,4 +1,4 @@
-package com.example.userinterfacetry.MasterHome;
+package com.example.userinterfacetry.MasterHome.loglist;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
