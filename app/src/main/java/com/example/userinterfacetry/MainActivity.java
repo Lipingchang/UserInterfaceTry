@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.userinterfacetry.MasterHome.MasterHomeFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRegisterFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRelatedToLock;
+import com.example.userinterfacetry.MasterHome.UserLogListFragment;
 import com.example.userinterfacetry.bean.MasterCard;
 
 import java.util.List;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                     }
 
                     if( display != null ) {
+                        display = new UserLogListFragment();
                         currentFragment = display;
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);

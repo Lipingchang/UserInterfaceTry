@@ -28,7 +28,7 @@ public class UserLogListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TimeLineAdapter mTimeLineAdapter;
     private List<TimeLineModel> mDataList = new ArrayList<>();
-    private Orientation mOrientation = HORIZONTAL;
+    private Orientation mOrientation = Orientation.VERTICAL;
     private boolean mWithLinePadding;
 
     public UserLogListFragment() {
@@ -40,7 +40,7 @@ public class UserLogListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_user_log_list, container, false);
+        View v = inflater.inflate(R.layout.activity_timeline, container, false);
 //    }
 
 
@@ -62,20 +62,20 @@ public class UserLogListFragment extends Fragment {
 //        setTitle(mOrientation == Orientation.HORIZONTAL ? getResources().getString(R.string.horizontal_timeline) : getResources().getString(R.string.vertical_timeline));
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-//        mRecyclerView.setLayoutManager(getLinearLayoutManager());
+        mRecyclerView.setLayoutManager(getLinearLayoutManager());
         mRecyclerView.setHasFixedSize(true);
 
         initView();
         return v;
     }
 
-//    private LinearLayoutManager getLinearLayoutManager() {
-//        if (mOrientation == Orientation.HORIZONTAL) {
-//            return new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        } else {
-//            return new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        }
-//    }
+    private LinearLayoutManager getLinearLayoutManager() {
+        if (mOrientation == Orientation.HORIZONTAL) {
+            return new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        } else {
+            return new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
+        }
+    }
 
     private void initView() {
         setDataListItems();
