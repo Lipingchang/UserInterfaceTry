@@ -16,7 +16,9 @@ import android.widget.Toast;
 import com.example.userinterfacetry.MasterHome.MasterHomeFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRegisterFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRelatedToLock;
+import com.example.userinterfacetry.MasterHome.UserLogListFragment;
 import com.example.userinterfacetry.bean.MasterCard;
+import com.example.userinterfacetry.bean.UserLog;
 
 import java.util.List;
 
@@ -37,9 +39,26 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     }
 
     @Override
+    public void MasterHomeRegisterSetTitle(String s) {
+        this.tv_title.setText(s);
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    @Override
+    public void addAFragment(Fragment f) {
+        Fragment display = f;
+        tv_title.setText(String.format("%d条记录", UserLog.logList.size()));
+        currentFragment = display;
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.id_framelayout_mainactivity, currentFragment)
+            .addToBackStack(null);
+        transaction.commit();
+    }
+
     // 返回关联结果,修改页面:
     public void relateResult(boolean success){
         Fragment ff = getVisiableFragment();
@@ -50,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
                 transaction.commit();
-                tv_title.setText( "Hi"+MasterCard.getMasterCardInstance().getMasterName() );
 
             }else
                 ((MasterHomeRelatedToLock)ff).setReRelated();
@@ -102,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                                 display = new MasterHomeRelatedToLock();
                                 Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();
                             }else{
-                                tv_title.setText( "Hi"+MasterCard.getMasterCardInstance().getMasterName() );
                                 display = new MasterHomeFragment();
                             }
                             break;
@@ -110,9 +127,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                             tv_title.setText(mainContext.getResources().getText(R.string.guest_card_title));
                             display = new GuestCardListFragment();
                             break;
-//                        case R.id.navigation_notifications:
-//                            mTextMessage.setText(R.string.title_notifications);
-//                            break;
+
                     }
 
                     if( display != null ) {
@@ -141,4 +156,9 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
 
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

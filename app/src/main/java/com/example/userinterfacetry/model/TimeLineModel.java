@@ -3,22 +3,34 @@ package com.example.userinterfacetry.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.userinterfacetry.bean.UserLog;
+
 /**
  * Created by HP-HP on 05-12-2015.
  */
-public class TimeLineModel implements Parcelable {
+public class TimeLineModel {
 
     private String mMessage;
     private String mDate;
-    private OrderStatus mStatus;
+    private UserLog.PassType mStatus;
+    private UserLog.UserType userType;
 
     public TimeLineModel() {
     }
 
-    public TimeLineModel(String mMessage, String mDate, OrderStatus mStatus) {
+    public TimeLineModel(String mMessage, String mDate, UserLog.PassType mStatus, UserLog.UserType type) {
         this.mMessage = mMessage;
         this.mDate = mDate;
         this.mStatus = mStatus;
+        this.userType = type;
+    }
+
+    public UserLog.UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserLog.UserType userType) {
+        this.userType = userType;
     }
 
     public String getMessage() {
@@ -37,42 +49,12 @@ public class TimeLineModel implements Parcelable {
         this.mDate = date;
     }
 
-    public OrderStatus getStatus() {
+    public UserLog.PassType getStatus() {
         return mStatus;
     }
 
-    public void setStatus(OrderStatus mStatus) {
+    public void setStatus(UserLog.PassType mStatus) {
         this.mStatus = mStatus;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mMessage);
-        dest.writeString(this.mDate);
-        dest.writeInt(this.mStatus == null ? -1 : this.mStatus.ordinal());
-    }
-
-    protected TimeLineModel(Parcel in) {
-        this.mMessage = in.readString();
-        this.mDate = in.readString();
-        int tmpMStatus = in.readInt();
-        this.mStatus = tmpMStatus == -1 ? null : OrderStatus.values()[tmpMStatus];
-    }
-
-    public static final Parcelable.Creator<TimeLineModel> CREATOR = new Parcelable.Creator<TimeLineModel>() {
-        @Override
-        public TimeLineModel createFromParcel(Parcel source) {
-            return new TimeLineModel(source);
-        }
-
-        @Override
-        public TimeLineModel[] newArray(int size) {
-            return new TimeLineModel[size];
-        }
-    };
 }

@@ -6,4 +6,8 @@
     <color name="white">#aab9EE</color>
     <color name="colorAccentDark">#ef145e</color>
     <color name="colorBackground">#eeeeee</color>
+
+    <color name="masterColor">#FFF5AF</color>
+    <color name="guestColor">#C8DE8A</color>
+    <color name="unknowUserColor">#F29B87</color>
 </resources>

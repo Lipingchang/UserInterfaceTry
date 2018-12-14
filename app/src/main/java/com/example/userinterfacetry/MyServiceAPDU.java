@@ -17,8 +17,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static com.example.userinterfacetry.utils.UtilTools.bytesToHex;
 
@@ -183,14 +185,23 @@ public class MyServiceAPDU extends HostApduService {
         // 收到门锁发送的 最近的用户的列表：
         // 2 记录日志
         int start = 1;
+        List<UserLog> logs = new ArrayList<>();
         while(true){
             try {
                UserLog k = UserLog.byte2Log(Arrays.copyOfRange(commandApdu,start,commandApdu.length));
+               logs.add(k);
                start += k.rawdatalen;
             }catch (Exception e){
                 break;
             }
         }
+
+        try {
+            UserLog.addLogs(logs);
+        }catch (Exception e){
+            Toast.makeText(this,"读取日志失败",Toast.LENGTH_LONG).show();
+        }
+
         return byeByePN532();
     }
 

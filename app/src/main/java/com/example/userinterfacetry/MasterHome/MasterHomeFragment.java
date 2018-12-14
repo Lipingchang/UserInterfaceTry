@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.userinterfacetry.MasterHome.PerferenceActivity;
 import com.example.userinterfacetry.R;
+import com.example.userinterfacetry.bean.MasterCard;
 
 
 public class MasterHomeFragment extends Fragment implements View.OnClickListener{
@@ -44,6 +45,7 @@ public class MasterHomeFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.id_master_home_history_btn:
+                mListener.addAFragment(new UserLogListFragment());
                 break;
             case R.id.id_master_home_changepwd_btn:
                 startActivity( PerferenceActivity.class );
@@ -76,9 +78,17 @@ public class MasterHomeFragment extends Fragment implements View.OnClickListener
         mListener = null;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mListener.MasterHomeRegisterSetTitle( "Hi!  "+ MasterCard.getMasterCardInstance().getMasterName());
+    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        <T extends Fragment> void addAFragment(T f);
+        void MasterHomeRegisterSetTitle(String s);
+
     }
 }
