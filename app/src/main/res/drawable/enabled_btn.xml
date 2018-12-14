@@ -4,7 +4,7 @@
         android:radius="18dp"
         />
     <solid
-        android:color="#7fb80e	"
+        android:color="@color/accept_btn"
         />
 
 </shape>
