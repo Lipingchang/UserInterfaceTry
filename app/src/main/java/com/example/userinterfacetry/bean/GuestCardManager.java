@@ -1,12 +1,22 @@
 package com.example.userinterfacetry.bean;
 
+import android.util.Log;
+
+import com.example.userinterfacetry.AesCBC;
 import com.example.userinterfacetry.utils.UtilTools;
+import com.google.gson.Gson;
+import com.example.userinterfacetry.utils.UtilTools;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class GuestCardManager {
+    private static final String TAG = "GuestCardManager";
+
     private static List<GuestCard> guestCardList = new ArrayList<>();
 
 
@@ -45,6 +55,46 @@ public class GuestCardManager {
         }
         public boolean ismyLock(byte[] inputLockID){
             return validCard && UtilTools.lockID2String(inputLockID).equals(this.lockID);
+        }
+    }
+    public static String generateCryptoCard(String guestName,Date start,Date end) throws  Exception{
+        CryptoCard card = new CryptoCard(guestName,start,end);
+
+        String s = "";
+        s += "$";
+        s += card.masterPwdCrypto();
+        s += "$";
+        s += card.commonCrypto();
+        s += "$";
+
+        return s;
+    }
+    static class CryptoCard{
+        private static final String commonPwd = "hahahahahahahaha";
+        int masterID;
+        String guestName,data;
+        long start,end;
+        public CryptoCard(String guestName,Date start,Date end){
+            this.guestName = guestName;
+            this.masterID = MasterCard.getMasterCardInstance().getMasterId();
+            this.start = start.getTime()/1000; this.end = end.getTime()/1000;
+            data = new Gson().toJson(this);
+            Log.d(TAG,data);
+        }
+        public String masterPwdCrypto()throws Exception{
+            String pwd = MasterCard.getMasterCardInstance().getMasterPwd();
+            if( pwd.length() < 16 ){
+                pwd += StringUtils.repeat("0",(16-pwd.length()) );
+            }
+            if( pwd.length() > 16 ){
+                pwd = StringUtils.substring(pwd,0,16);
+            }
+            AesCBC aes = AesCBC.getInstance();
+            return aes.encrypt(data,pwd);
+        }
+        public String commonCrypto() throws Exception{
+            AesCBC aes = AesCBC.getInstance();
+            return aes.encrypt(data,commonPwd);
         }
     }
 }
