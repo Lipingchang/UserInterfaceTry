@@ -1,5 +1,6 @@
 package com.example.userinterfacetry.bean;
 
+import android.content.Context;
 import android.nfc.Tag;
 import android.util.Base64;
 import android.util.Log;
@@ -8,12 +9,17 @@ import android.widget.Toast;
 import com.example.userinterfacetry.AesCBC;
 import com.example.userinterfacetry.MainActivity;
 import com.example.userinterfacetry.MasterHome.MasterHomeFragment;
+import com.example.userinterfacetry.MyServiceAPDU;
 import com.example.userinterfacetry.utils.UtilTools;
 import com.google.gson.Gson;
 import com.example.userinterfacetry.utils.UtilTools;
+import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,23 +28,33 @@ import static com.example.userinterfacetry.bean.GuestCardManager.TAG;
 
 public class GuestCardManager {
     public static final String TAG = "GuestCardManager";
+    private static final String GuestCardFileName = "GuestCardSave.txt";
+    public static List<GuestCard> guestCardList = new ArrayList<>();
 
-    private static List<GuestCard> guestCardList = new ArrayList<>();
 
-
-    public static List<GuestCard> getList(){
-        return GuestCardManager.guestCardList;
+    public static void saveCardsToFile() throws Exception{
+        OutputStream out = MainActivity.mainContext.openFileOutput(GuestCardFileName, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        out.write(gson.toJson(guestCardList).getBytes());
+        out.close();
     }
-    
-    public static void saveCardsToFile(){
-
-    }
-    public static void loadCardsFromFile(){
-
+    public static List<GuestCard> loadCardsFromFile() throws  Exception{
+        List<GuestCard> re = new ArrayList<>();
+        Context c = MyServiceAPDU.serviceContext == null ? MainActivity.mainContext : MyServiceAPDU.serviceContext;
+        InputStream inputfile = c.openFileInput(GuestCardFileName);
+        re = new Gson().fromJson(IOUtils.toString(inputfile), new TypeToken<List<GuestCard>>(){}.getType() );
+        inputfile.close();
+        return re;
     }
     public static void addCard(GuestCard c){
         guestCardList.add(c);
         System.out.println("GuestCard:"+guestCardList.size());
+
+        try {
+            saveCardsToFile();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     // 在副卡列表中查找 有这个 id 卡
@@ -77,7 +93,7 @@ public class GuestCardManager {
         s += "$";
         s += Base64.encodeToString( MasterCard.getMasterCardInstance().getLockID().getBytes() ,Base64.DEFAULT );
         s += "$";
-        s.replaceAll("[\\s*\t\n\r]", "");
+        s = s.replaceAll("[\\s*\t\n\r]", "");
 
         return s;
     }
@@ -110,32 +126,7 @@ public class GuestCardManager {
     }
 
 }
-class GuestCard{
-    public String lockID;      // 卡 对应的锁的ID
-    private String pwd;         // 认证的时候用的加密数据
-    private String cardName;    // 卡 的名字
-    private Date startDate;
-    private Date expireDate;    // 卡 的截止日期
-    protected boolean validCard = false;  // 卡 有没有过期了
-    private int sendCardMasterID;   // 发卡人的id号
 
-    public GuestCard(int sendCardMasterID,String lockID, String pwd, String cardName,Date startDate, Date expireDate) {
-        this.lockID = lockID;
-        this.pwd = pwd;
-        this.cardName = cardName;
-        this.expireDate = expireDate;
-        this.startDate = startDate;
-        this.validCard = (startDate.getTime()<System.currentTimeMillis()) && (expireDate.getTime()>System.currentTimeMillis());
-        this.sendCardMasterID = sendCardMasterID;
-    }
-
-    public boolean ismyLock(byte[] inputLockID){
-        return validCard && UtilTools.lockID2String(inputLockID).equals(this.lockID);
-    }
-    public boolean ismyLock(String inputLockID){
-        return validCard && inputLockID.equals(this.lockID);
-    }
-}
 class CryptoCard{
     private static final String commonPwd = "hahahahahahahaha";
     int masterID;

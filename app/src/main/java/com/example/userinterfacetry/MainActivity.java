@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.userinterfacetry.MasterHome.MasterHomeFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRegisterFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRelatedToLock;
+import com.example.userinterfacetry.bean.GuestCard;
 import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
 import com.example.userinterfacetry.bean.UserLog;
@@ -156,12 +157,21 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
         this.navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        // 从文件中导入副卡列表
+        try {
 
+            GuestCardManager.guestCardList = GuestCardManager.loadCardsFromFile();
+            Log.d(TAG,"load "+GuestCardManager.guestCardList.size() +" 张副卡");
+        }catch (Exception e){
+            Log.e(TAG,"从文件导入 副卡 失败");
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        // TODO 之前导入的副卡中 在配对成功后要删除 相同lockid的副卡
         try {
             ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData data = cm.getPrimaryClip();
@@ -169,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
             String content = item.getText().toString();
             if (GuestCardManager.getCardFromClipBoard(content))
                 Toast.makeText(this, "add!", Toast.LENGTH_SHORT).show();
+
         }catch (Exception e){
             // TODO  need to be del!!
             e.printStackTrace();

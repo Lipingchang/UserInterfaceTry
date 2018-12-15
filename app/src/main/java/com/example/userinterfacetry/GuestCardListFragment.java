@@ -20,6 +20,8 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.example.userinterfacetry.bean.GuestCard;
+import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.SecondaryCard;
 
 import java.util.ArrayList;
@@ -52,15 +54,20 @@ public class GuestCardListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         mAppList = new ArrayList<>();
-        mAppList.add(new SecondaryCard("小A的603", new Date(System.currentTimeMillis()-10000),true));
-        mAppList.add(new SecondaryCard("小B的501", new Date(System.currentTimeMillis()-200000),true));
-        mAppList.add(new SecondaryCard("小C的113", new Date(System.currentTimeMillis()-3000000),false));
-        mAppList.add(new SecondaryCard("小D的543", new Date(System.currentTimeMillis()-3000000),false));
-        mAppList.add(new SecondaryCard("小E的673", new Date(System.currentTimeMillis()-6000000),false));
-        mAppList.add(new SecondaryCard("小F的121", new Date(System.currentTimeMillis()-88000000),false));
-        mAppList.add(new SecondaryCard("小G的421", new Date(System.currentTimeMillis()-90000000),false));
-        mAppList.add(new SecondaryCard("小H的317", new Date(System.currentTimeMillis()-211100000),false));
+        List<GuestCard> cards = GuestCardManager.guestCardList;
+        for( GuestCard c : cards ){
+            mAppList.add(new SecondaryCard(c.cardName,c.startDate,c.isValidCard()));
+        }
+//        mAppList.add(new SecondaryCard("小A的603", new Date(System.currentTimeMillis()-10000),true));
+//        mAppList.add(new SecondaryCard("小B的501", new Date(System.currentTimeMillis()-200000),true));
+//        mAppList.add(new SecondaryCard("小C的113", new Date(System.currentTimeMillis()-3000000),false));
+//        mAppList.add(new SecondaryCard("小D的543", new Date(System.currentTimeMillis()-3000000),false));
+//        mAppList.add(new SecondaryCard("小E的673", new Date(System.currentTimeMillis()-6000000),false));
+//        mAppList.add(new SecondaryCard("小F的121", new Date(System.currentTimeMillis()-88000000),false));
+//        mAppList.add(new SecondaryCard("小G的421", new Date(System.currentTimeMillis()-90000000),false));
+//        mAppList.add(new SecondaryCard("小H的317", new Date(System.currentTimeMillis()-211100000),false));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_guest_card_list, container, false);
         listView = view.findViewById(R.id.listView);
