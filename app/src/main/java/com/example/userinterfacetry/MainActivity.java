@@ -162,14 +162,19 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     @Override
     protected void onStart() {
         super.onStart();
-        ClipboardManager cm =(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData data = cm.getPrimaryClip();
-        ClipData.Item item = data.getItemAt(0);
-        String content = item.getText().toString();
-        if(GuestCardManager.getCardFromClipBoard(content) )
-            Toast.makeText(this,"add!",Toast.LENGTH_SHORT).show();
-        else
+        try {
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData data = cm.getPrimaryClip();
+            ClipData.Item item = data.getItemAt(0);
+            String content = item.getText().toString();
+            if (GuestCardManager.getCardFromClipBoard(content))
+                Toast.makeText(this, "add!", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            // TODO  need to be del!!
+            e.printStackTrace();
+            Log.e(TAG,e.getMessage());
             Toast.makeText(this,"not found!",Toast.LENGTH_SHORT).show();
+        }
 
 
     }

@@ -59,11 +59,6 @@ public class MasterHomeFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.id_master_home_send_card_btn:
                 RangeActivity.show(MainActivity.mainContext);
-                try {
-                    System.out.println( GuestCardManager.generateCryptoCard("lipc",new Date(1),new Date(1000)) );
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
                 break;
         }
     }
