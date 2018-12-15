@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UserInterfaceTry</string>
+    <string name="app_name">NFC开门</string>
     <string name="title_home">用户中心</string>
     <string name="title_dashboard">副卡管理</string>
     <string name="title_notifications">Notifications</string>

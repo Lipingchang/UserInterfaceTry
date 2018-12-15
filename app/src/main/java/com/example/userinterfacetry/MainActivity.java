@@ -108,43 +108,46 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    System.out.println( navigation.getSelectedItemId() );
-
-                    Fragment display = null; // 将要展示的fragment:
-                    switch (item.getItemId()) {
-                        case R.id.navigation_home:
-                            // 检查有没有注册过
-                            MasterCard masterCard = MasterCard.getMasterCardInstance();
-
-                            if( ! masterCard.isRegister() ){ // 没有注册过信息
-                                tv_title.setText(mainContext.getResources().getText(R.string.register_title));
-                                display = new MasterHomeRegisterFragment();
-                                Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_SHORT).show();
-                            }else if( ! masterCard.isHaveLock() ) { // 没有关联门锁
-                                tv_title.setText(mainContext.getResources().getText(R.string.related_lock_title));
-                                display = new MasterHomeRelatedToLock();
-                                Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();
-                            }else{
-                                display = new MasterHomeFragment();
-                            }
-                            break;
-                        case R.id.navigation_dashboard:
-                            display = new GuestCardListFragment();
-                            break;
-
-                    }
-
-                    if( display != null ) {
-                        currentFragment = display;
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
-                        transaction.commit();
-                    }else {
-
-                    }
-                    return true;
+                    return nvClick(item);
                 }
     };
+    private boolean nvClick(@NonNull MenuItem item){
+        System.out.println( navigation.getSelectedItemId() );
+
+        Fragment display = null; // 将要展示的fragment:
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                // 检查有没有注册过
+                MasterCard masterCard = MasterCard.getMasterCardInstance();
+
+                if( ! masterCard.isRegister() ){ // 没有注册过信息
+                    tv_title.setText(mainContext.getResources().getText(R.string.register_title));
+                    display = new MasterHomeRegisterFragment();
+                    Toast.makeText(MainActivity.mainContext,"你还没有初始化你的门卡!",Toast.LENGTH_SHORT).show();
+                }else if( ! masterCard.isHaveLock() ) { // 没有关联门锁
+                    tv_title.setText(mainContext.getResources().getText(R.string.related_lock_title));
+                    display = new MasterHomeRelatedToLock();
+                    Toast.makeText(MainActivity.mainContext,"还没有关联门锁!",Toast.LENGTH_SHORT).show();
+                }else{
+                    display = new MasterHomeFragment();
+                }
+                break;
+            case R.id.navigation_dashboard:
+                display = new GuestCardListFragment();
+                break;
+
+        }
+
+        if( display != null ) {
+            currentFragment = display;
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.id_framelayout_mainactivity, currentFragment);
+            transaction.commit();
+        }else {
+
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
     @Override
     protected void onStart() {
         super.onStart();
+        nvClick( navigation.getMenu().getItem(0) );
+
         // TODO 之前导入的副卡中 在配对成功后要删除 相同lockid的副卡
         try {
             ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
