@@ -144,6 +144,7 @@ public class MyServiceAPDU extends HostApduService {
         }else{
             // 不能开的锁
             // TODO
+            UtilTools.doubleVibrator();
         }
         return accessRequest;
     }
