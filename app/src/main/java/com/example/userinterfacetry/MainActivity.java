@@ -1,5 +1,8 @@
 package com.example.userinterfacetry;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import com.example.userinterfacetry.MasterHome.MasterHomeFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRegisterFragment;
 import com.example.userinterfacetry.MasterHome.MasterHomeRelatedToLock;
+import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
 import com.example.userinterfacetry.bean.UserLog;
 
@@ -155,6 +159,25 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        try {
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData data = cm.getPrimaryClip();
+            ClipData.Item item = data.getItemAt(0);
+            String content = item.getText().toString();
+            if (GuestCardManager.getCardFromClipBoard(content))
+                Toast.makeText(this, "add!", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            // TODO  need to be del!!
+            e.printStackTrace();
+            Log.e(TAG,e.getMessage());
+            Toast.makeText(this,"not found!",Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 
     @Override
     public void onBackPressed() {

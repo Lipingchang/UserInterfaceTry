@@ -26,6 +26,10 @@ public class MasterCard {
     private byte    masterId = -1; //
     private String LockID = "not set";      //
 
+    public String getLockID() {
+        return LockID;
+    }
+
     public static MasterCard getMasterCardInstance(){
         if( masterCardInstance == null ){
             masterCardInstance = new MasterCard();

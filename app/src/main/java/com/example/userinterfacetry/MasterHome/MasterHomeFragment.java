@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.userinterfacetry.MainActivity;
+import com.example.userinterfacetry.MasterHome.SendSecondaryCard.range.RangeActivity;
 import com.example.userinterfacetry.MasterHome.loglist.UserLogListFragment;
 import com.example.userinterfacetry.MasterHome.setting.PerferenceActivity;
 import com.example.userinterfacetry.R;
@@ -56,11 +58,7 @@ public class MasterHomeFragment extends Fragment implements View.OnClickListener
                 startActivity( PerferenceActivity.class );
                 break;
             case R.id.id_master_home_send_card_btn:
-                try {
-                    System.out.println( GuestCardManager.generateCryptoCard("lipc",new Date(1),new Date(1000)) );
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                RangeActivity.show(MainActivity.mainContext);
                 break;
         }
     }

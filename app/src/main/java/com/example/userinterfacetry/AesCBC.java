@@ -15,24 +15,7 @@ public class AesCBC{
     private static String decode = "utf-8";
 
     private static AesCBC instance=null;
-//    public static void runmain() throws Exception {
-//        // 需要加密的字串
-//        String cSrc = "a";
-//        System.out.println(cSrc);
-//        // 加密
-//        long lStart = System.currentTimeMillis();
-//        String enString = AesCBC.getInstance().encrypt(cSrc,decode,sKey,ivParameter);
-//        System.out.println("加密后的字串是："+ enString);
-//
-//        long lUseTime = System.currentTimeMillis() - lStart;
-//        System.out.println("加密耗时：" + lUseTime + "毫秒");
-//        // 解密
-//        lStart = System.currentTimeMillis();
-//        String DeString = AesCBC.getInstance().decrypt(enString,decode,sKey,ivParameter);
-//        System.out.println("解密后的字串是：" + DeString);
-//        lUseTime = System.currentTimeMillis() - lStart;
-//        System.out.println("解密耗时：" + lUseTime + "毫秒");
-//    }
+
 
     private AesCBC(){
 
@@ -50,7 +33,7 @@ public class AesCBC{
         return k;
     }
     public String decrypt(String sSrc,String sKey) throws Exception{
-        String k = this.decrypt(sSrc,sKey, AesCBC.decode,AesCBC.ivParameter);
+        String k = this.decrypt(sSrc, AesCBC.decode,sKey,AesCBC.ivParameter);
         System.out.println(k);
         return k;
     }
