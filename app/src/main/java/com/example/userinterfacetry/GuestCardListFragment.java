@@ -48,6 +48,10 @@ public class GuestCardListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((MainActivity)(MainActivity.mainContext)).MasterHomeRegisterSetTitle(
+                MainActivity.mainContext.getString(R.string.guest_card_title)
+                        + GuestCardManager.guestCardList.size()
+                        +"张");
     }
 
     @Override
@@ -58,17 +62,9 @@ public class GuestCardListFragment extends Fragment {
         mAppList = new ArrayList<>();
         List<GuestCard> cards = GuestCardManager.guestCardList;
         for( GuestCard c : cards ){
-            mAppList.add(new SecondaryCard(c.cardName,c.startDate,c.isValidCard()));
+            mAppList.add(new SecondaryCard(c.mastername+" 给 "+c.cardName ,c.startDate,c.expireDate,new Date(0),c.isValidCard()));
         }
-//        mAppList.add(new SecondaryCard("小A的603", new Date(System.currentTimeMillis()-10000),true));
-//        mAppList.add(new SecondaryCard("小B的501", new Date(System.currentTimeMillis()-200000),true));
-//        mAppList.add(new SecondaryCard("小C的113", new Date(System.currentTimeMillis()-3000000),false));
-//        mAppList.add(new SecondaryCard("小D的543", new Date(System.currentTimeMillis()-3000000),false));
-//        mAppList.add(new SecondaryCard("小E的673", new Date(System.currentTimeMillis()-6000000),false));
-//        mAppList.add(new SecondaryCard("小F的121", new Date(System.currentTimeMillis()-88000000),false));
-//        mAppList.add(new SecondaryCard("小G的421", new Date(System.currentTimeMillis()-90000000),false));
-//        mAppList.add(new SecondaryCard("小H的317", new Date(System.currentTimeMillis()-211100000),false));
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_guest_card_list, container, false);
         listView = view.findViewById(R.id.listView);
         listView.setAdapter(this.mAdapter);
@@ -117,6 +113,10 @@ public class GuestCardListFragment extends Fragment {
                         break;
                     case 1:
                         System.out.println(1);
+                        mAppList.remove(index-1);
+                        GuestCardManager.guestCardList.remove(index-1);
+                        mAdapter.notifyDataSetChanged();
+
                         // delete
                         break;
                 }
@@ -157,7 +157,8 @@ public class GuestCardListFragment extends Fragment {
             SecondaryCard item = getItem(position);
             holder.iv_icon.setImageDrawable(item.getIcon());
             holder.tv_name.setText(item.getName());
-            holder.tv_last_used_time.setText(item.getLastUseTime());
+//            holder.tv_last_used_time.setText(item.getLastUseTime());
+            holder.tv_last_used_time.setText( item.getValidityRange() );
 
             return convertView;
         }

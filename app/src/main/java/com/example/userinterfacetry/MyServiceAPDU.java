@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.userinterfacetry.bean.GuestCard;
 import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
 import com.example.userinterfacetry.bean.UserLog;
@@ -129,9 +130,17 @@ public class MyServiceAPDU extends HostApduService {
                     UtilTools.pwd2HexByte(masterCard.getMasterPwd())
             );
 
-        }else if( GuestCardManager.containLockID(LockID)){
+        }else if( GuestCardManager.containLockID(LockID) != null ){
             // 是别人家 的锁
             // TODO
+            GuestCard card = GuestCardManager.containLockID(LockID);
+            Log.d(TAG,"开始认证别人的锁");
+            accessRequest[1] = GuestMode;
+            accessRequest[2] = UtilTools.int2byte( card.sendCardMasterID );
+            accessRequest = ArrayUtils.addAll(accessRequest,
+                    card.pwd.getBytes()
+                    );
+
         }else{
             // 不能开的锁
             // TODO

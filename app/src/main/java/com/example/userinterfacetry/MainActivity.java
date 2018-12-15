@@ -24,6 +24,7 @@ import com.example.userinterfacetry.bean.GuestCardManager;
 import com.example.userinterfacetry.bean.MasterCard;
 import com.example.userinterfacetry.bean.UserLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MasterHomeFragment.OnFragmentInteractionListener,MasterHomeRegisterFragment.RegisterOverListener{
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
             Fragment fragment = fragments.get(i);
             if(fragment!=null && fragment.isAdded()&&fragment.isVisible() ) {
                Log.e(TAG,"related fragment:"+fragment.getClass()+" ");
-                return fragment;
+               return fragment;
             }
         }
         return null;
@@ -128,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
                             }
                             break;
                         case R.id.navigation_dashboard:
-                            tv_title.setText(mainContext.getResources().getText(R.string.guest_card_title));
                             display = new GuestCardListFragment();
                             break;
 
@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
             Log.d(TAG,"load "+GuestCardManager.guestCardList.size() +" 张副卡");
         }catch (Exception e){
             Log.e(TAG,"从文件导入 副卡 失败");
+            GuestCardManager.guestCardList = new ArrayList<>();
             e.printStackTrace();
         }
     }
@@ -177,17 +178,31 @@ public class MainActivity extends AppCompatActivity implements MasterHomeFragmen
             ClipData data = cm.getPrimaryClip();
             ClipData.Item item = data.getItemAt(0);
             String content = item.getText().toString();
-            if (GuestCardManager.getCardFromClipBoard(content))
+            if (GuestCardManager.getCardFromClipBoard(content)) {
                 Toast.makeText(this, "add!", Toast.LENGTH_SHORT).show();
+                ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText(null, "");
+                clipboard.setPrimaryClip(clipData);
+            }
 
         }catch (Exception e){
             // TODO  need to be del!!
             e.printStackTrace();
             Log.e(TAG,e.getMessage());
-            Toast.makeText(this,"not found!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Seccondary Card not found!",Toast.LENGTH_SHORT).show();
         }
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            GuestCardManager.saveCardsToFile();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

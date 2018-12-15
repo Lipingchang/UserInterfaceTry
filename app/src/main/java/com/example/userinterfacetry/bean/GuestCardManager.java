@@ -58,12 +58,12 @@ public class GuestCardManager {
     }
 
     // 在副卡列表中查找 有这个 id 卡
-    public static boolean containLockID(byte[] LockID){
+    public static GuestCard containLockID(byte[] LockID){
         for( GuestCard card : GuestCardManager.guestCardList ){
             if( card.ismyLock( LockID )  )
-                return true;
+                return card;
         }
-        return false;
+        return null;
     }
     // 在副卡列表中查找 有这个 id 卡
     public static boolean containLockID(String LockID){
@@ -82,7 +82,6 @@ public class GuestCardManager {
         return re;
     }
 
-
     public static String generateCryptoCard(String guestName,Date start,Date end) throws  Exception{
         CryptoCard card = new CryptoCard(guestName,start,end);
 
@@ -91,9 +90,14 @@ public class GuestCardManager {
         s += "$";
         s += card.commonCrypto();
         s += "$";
+        // 锁的id：
         s += Base64.encodeToString( MasterCard.getMasterCardInstance().getLockID().getBytes() ,Base64.DEFAULT );
         s += "$";
+        // master的名字：
+        s += Base64.encodeToString( MasterCard.getMasterCardInstance().getMasterName().getBytes(),Base64.DEFAULT );
         s = s.replaceAll("[\\s*\t\n\r]", "");
+
+
 
         return s;
     }
@@ -104,17 +108,27 @@ public class GuestCardManager {
             String s = datas[1];
             String data = datas[2];
             String lockid = datas[3];
+            String mastername = datas[4];
+
             System.out.println("get data:"+s + "\t" + data);
             System.out.println("new lock id:"+lockid);
 
-            GuestCard c = CryptoCard.decryptCard(datas[1],datas[2],datas[3]);
+            GuestCard c = CryptoCard.decryptCard(datas[1],datas[2],datas[3],mastername);
+            //c.mastername = new String(Base64.decode(mastername,Base64.DEFAULT));
+
+            if( !c.validCard ){
+                Toast.makeText(MainActivity.mainContext,"卡过期",Toast.LENGTH_SHORT).show();
+                return false;
+            }
             if(  MasterCard.getMasterCardInstance().getLockID().equals(c.lockID) ){
                 //还有这张卡不是自己锁的
+                Log.e(TAG,"这张卡是自己的锁的");
                 return false;
             }
             if( ! GuestCardManager.containLockID(c.lockID) ){
                 // 如果有一张有效的卡，并且锁的id相同，那就不能重复领卡，
                 GuestCardManager.addCard(c);
+                Toast.makeText(MainActivity.mainContext,"加了张卡",Toast.LENGTH_SHORT).show();
                 return true;
             }else{
                 Toast.makeText(MainActivity.mainContext,"已经有张可用的卡了",Toast.LENGTH_LONG).show();
@@ -156,7 +170,7 @@ class CryptoCard{
         return aes.encrypt(data,commonPwd);
     }
     // 第一个加密数据是给 和 pn532交流的时候用的，第二个加密数据 是为了在传输过程中保密用的（好像没软保护）
-    public static GuestCard decryptCard(String ssdata, String sdata,String lockid) throws Exception{
+    public static GuestCard decryptCard(String ssdata, String sdata,String lockid,String mastername) throws Exception{
         lockid = UtilTools.hexByte2Pwd(Base64.decode(lockid,Base64.DEFAULT));
         Log.e(TAG,"decrypt lock id:"+lockid);
 
@@ -165,7 +179,9 @@ class CryptoCard{
         Log.e(TAG,"decrypt guest card data:"+s);
         Gson gson = new Gson();
         CryptoCard c = gson.fromJson(s,CryptoCard.class);
-        GuestCard g = new GuestCard( c.masterID,lockid,ssdata,c.guestName,new Date(c.start*1000),new Date(c.end*1000) );
+        GuestCard g = new GuestCard( new String(Base64.decode(mastername,Base64.DEFAULT)),
+                c.masterID,lockid,ssdata,c.guestName,new Date(c.start*1000),new Date(c.end*1000)
+                );
 
         return g;
     }

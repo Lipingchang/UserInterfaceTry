@@ -6,6 +6,10 @@ import com.example.userinterfacetry.MainActivity;
 import com.example.userinterfacetry.R;
 import com.example.userinterfacetry.utils.UtilTools;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class SecondaryCard {
@@ -14,7 +18,10 @@ public class SecondaryCard {
     private String name;
     private Drawable icon;
     private Date lastUseTime;
-    public SecondaryCard(String name,Date lastUseTime,boolean passState){
+    private Date start,end;
+    public SecondaryCard(String name,Date start,Date end, Date lastUseTime,boolean passState){
+        this.start = start;
+        this.end = end;
         this.name = name;
         this.lastUseTime = lastUseTime;
         this.icon = passState ? passIconICON : forbiddenICON;
@@ -29,7 +36,17 @@ public class SecondaryCard {
     }
 
     public String getLastUseTime(){
+        if( this.lastUseTime.getTime() == 0 ){
+            return "没用过";
+        }
         return UtilTools.elapsedTime(this.lastUseTime);
+    }
+    public String getValidityRange(){
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String date = simpleDateFormat.format(start);
+        date += " ~ " + simpleDateFormat.format(end);
+        return date;
     }
 
     public void setLastUseTime(Date date){

@@ -34,8 +34,8 @@
             >
             <Button
                 android:id="@+id/id_master_home_changepwd_btn"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
                 android:background="@drawable/changepwd_btn" />
         </android.support.v7.widget.CardView>
 
@@ -48,8 +48,8 @@
             >
             <Button
                 android:id="@+id/id_master_home_history_btn"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
                 android:background="@drawable/history_btn"
                 />
         </android.support.v7.widget.CardView>
@@ -64,8 +64,8 @@
 
             <Button
                 android:id="@+id/id_master_home_send_card_btn"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
                 android:background="@drawable/send_card_btn" />
         </android.support.v7.widget.CardView>
 

@@ -145,6 +145,7 @@ public class RangeActivity extends AppCompatActivity implements
                         throw new RuntimeException("没有填名字");
                     }
 
+                    // 生成加密字符串
                     String sdata = GuestCardManager.generateCryptoCard(username, s, e);
                     ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clipData = ClipData.newPlainText(null, sdata);
